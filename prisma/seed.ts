@@ -1,14 +1,14 @@
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, MatchClassification, MatchReviewStatus, MatchRunStatus, ImportStatus } from "@prisma/client";
+import {
+  MatchClassification,
+  MatchReviewStatus,
+  MatchRunStatus,
+  ImportStatus,
+} from "@prisma/client";
 import { hashPassword } from "better-auth/crypto";
 import { computeStandardizedFields } from "../lib/deduplication/standardization";
 import { compareRecordPair } from "../lib/deduplication/matching-engine";
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
-const prisma = new PrismaClient({ adapter });
+import prisma from "@/lib/prisma";
 
 const password = process.env.SEED_USER_PASSWORD ?? "University123!";
 
@@ -421,12 +421,36 @@ async function main() {
 
   // 2. Seed Default Deduplication Settings
   const settings = [
-    { key: "match_threshold", value: "0.80", description: "Definite match threshold (MATCH classification)" },
-    { key: "possible_threshold", value: "0.52", description: "Possible match threshold (POSSIBLE_MATCH classification)" },
-    { key: "default_algorithm", value: "Hybrid Fellegi-Sunter & Token Similarity", description: "Default matching algorithm" },
-    { key: "exhaustive_threshold", value: "300", description: "Cap for exhaustive vs blocked candidate generation" },
-    { key: "institution_name", value: "University of Kigali", description: "Institution name" },
-    { key: "primary_campus", value: "Kigali Campus (Kacyiru)", description: "Primary main campus" },
+    {
+      key: "match_threshold",
+      value: "0.80",
+      description: "Definite match threshold (MATCH classification)",
+    },
+    {
+      key: "possible_threshold",
+      value: "0.52",
+      description: "Possible match threshold (POSSIBLE_MATCH classification)",
+    },
+    {
+      key: "default_algorithm",
+      value: "Hybrid Fellegi-Sunter & Token Similarity",
+      description: "Default matching algorithm",
+    },
+    {
+      key: "exhaustive_threshold",
+      value: "300",
+      description: "Cap for exhaustive vs blocked candidate generation",
+    },
+    {
+      key: "institution_name",
+      value: "University of Kigali",
+      description: "Institution name",
+    },
+    {
+      key: "primary_campus",
+      value: "Kigali Campus (Kacyiru)",
+      description: "Primary main campus",
+    },
   ];
 
   for (const s of settings) {
@@ -515,7 +539,7 @@ async function main() {
       status: MatchRunStatus.COMPLETED,
       algorithm: "Hybrid Fellegi-Sunter & Token Similarity",
       modelVersion: "v2.4-UOK-ML",
-      matchThreshold: 0.80,
+      matchThreshold: 0.8,
       possibleThreshold: 0.52,
       recordsProcessed: createdRecords.length,
       candidatePairs: 12,
@@ -556,7 +580,8 @@ async function main() {
       modelVersion: eval1.modelVersion,
       reviewedById: registryUser.id,
       reviewedAt: new Date(),
-      reviewNote: "Confirmed: Student registered on main admissions and local Musanze registry with slight spelling variation.",
+      reviewNote:
+        "Confirmed: Student registered on main admissions and local Musanze registry with slight spelling variation.",
       fieldComparisons: {
         create: eval1.fieldComparisons.map((fc) => ({
           fieldName: fc.fieldName,
@@ -651,7 +676,8 @@ async function main() {
         programme: rec2a.programme,
         campus: rec2a.campus,
       },
-      mergeReason: "Confirmed duplicate entries from Economics Faculty import consolidated into master record.",
+      mergeReason:
+        "Confirmed duplicate entries from Economics Faculty import consolidated into master record.",
       mergedAt: new Date(),
     },
     update: {},
@@ -743,34 +769,39 @@ async function main() {
       actorUserId: adminUser.id,
       action: "SYSTEM_SETTING_CHANGES",
       entityType: "DeduplicationSetting",
-      description: "Administrator configured initial match thresholds (Match: 0.80, Possible: 0.52).",
+      description:
+        "Administrator configured initial match thresholds (Match: 0.80, Possible: 0.52).",
     },
     {
       actorUserId: registryUser.id,
       action: "DATASET_IMPORT",
       entityType: "DatasetImport",
       entityId: datasetImport.id,
-      description: "Registry staff uploaded cohort CSV 'UoK_Student_Admissions_Cohort_2024.csv'.",
+      description:
+        "Registry staff uploaded cohort CSV 'UoK_Student_Admissions_Cohort_2024.csv'.",
     },
     {
       actorUserId: registryUser.id,
       action: "DEDUPLICATION_EXECUTION",
       entityType: "MatchRun",
       entityId: matchRun.id,
-      description: "Registry staff executed deduplication pipeline across 9 student records.",
+      description:
+        "Registry staff executed deduplication pipeline across 9 student records.",
     },
     {
       actorUserId: registryUser.id,
       action: "MATCH_CONFIRMATION",
       entityType: "MatchCandidate",
       entityId: cand1.id,
-      description: "Registry staff confirmed match pair between 'Jean-Paul Habimana' and 'Jean Paul Habimana'.",
+      description:
+        "Registry staff confirmed match pair between 'Jean-Paul Habimana' and 'Jean Paul Habimana'.",
     },
     {
       actorUserId: registryUser.id,
       action: "RECORD_MERGING",
       entityType: "RecordMerge",
-      description: "Registry staff merged duplicate record 'Uwase Aline' into master record 'Aline Mukamana Uwase'.",
+      description:
+        "Registry staff merged duplicate record 'Uwase Aline' into master record 'Aline Mukamana Uwase'.",
     },
   ];
 
