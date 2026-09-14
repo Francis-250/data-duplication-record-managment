@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { reviewMatchCandidate } from "@/actions/registry/deduplication";
+import { reviewMatchCandidate, getAiCandidateAnalysis } from "@/actions/registry/deduplication";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,17 +15,31 @@ import {
   CheckCircle2,
   XCircle,
   Layers,
-  GitCompare,
-  AlertCircle,
-  HelpCircle,
+  Sparkles,
+  Bot,
+  Loader2,
   Check,
-  X,
 } from "lucide-react";
 
 export function RegistrySideBySideReview({ candidate }: { candidate: any }) {
   const router = useRouter();
   const [reviewNote, setReviewNote] = useState(candidate.reviewNote || "");
   const [pending, startTransition] = useTransition();
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [isAnalyzingAi, setIsAnalyzingAi] = useState(false);
+
+  const handleRunAiAnalysis = async () => {
+    setIsAnalyzingAi(true);
+    try {
+      const result = await getAiCandidateAnalysis(candidate.id);
+      setAiAnalysis(result);
+      toast.success("AI analysis completed successfully.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to run AI analysis.");
+    } finally {
+      setIsAnalyzingAi(false);
+    }
+  };
 
   const recordA = candidate.recordA;
   const recordB = candidate.recordB;
@@ -131,6 +145,117 @@ export function RegistrySideBySideReview({ candidate }: { candidate: any }) {
             </div>
           </div>
         </CardContent>
+      </Card>
+
+      {/* AI Deep Analysis Section (Powered by GROQ_MODEL openai/gpt-oss-120b) */}
+      <Card className="border-indigo-500/40 bg-gradient-to-r from-indigo-950/10 via-background to-blue-950/10">
+        <CardHeader className="pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Bot className="h-5 w-5 text-indigo-500" />
+                <CardTitle className="text-base font-semibold">AI Entity Resolution & Match Analysis</CardTitle>
+                <Badge variant="outline" className="text-[10px] border-indigo-500/50 text-indigo-600 dark:text-indigo-400 font-mono">
+                  openai/gpt-oss-120b
+                </Badge>
+              </div>
+              <CardDescription className="text-xs">
+                Deep linguistic & identity evaluation using Groq&apos;s 120B reasoning model to assess name variations, Rwandan ID slips, and registration discrepancies.
+              </CardDescription>
+            </div>
+
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={isAnalyzingAi}
+              onClick={handleRunAiAnalysis}
+              className="border-indigo-500/50 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
+            >
+              {isAnalyzingAi ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing with 120B AI...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4 text-amber-500" />
+                  Run AI Deep Analysis
+                </>
+              )}
+            </Button>
+          </div>
+        </CardHeader>
+
+        {aiAnalysis && (
+          <CardContent className="space-y-4 pt-1 border-t border-border/60">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-3 rounded-lg border bg-card/60">
+                <span className="text-[10px] uppercase font-semibold text-muted-foreground block">AI Duplicate Verdict</span>
+                <Badge
+                  className={`mt-1 font-semibold ${
+                    aiAnalysis.duplicateVerdict === "DEFINITE_DUPLICATE"
+                      ? "bg-emerald-600 text-white"
+                      : aiAnalysis.duplicateVerdict === "PROBABLE_DUPLICATE"
+                      ? "bg-blue-600 text-white"
+                      : aiAnalysis.duplicateVerdict === "DISTINCT_INDIVIDUALS"
+                      ? "bg-rose-600 text-white"
+                      : "bg-amber-600 text-white"
+                  }`}
+                >
+                  {aiAnalysis.duplicateVerdict.replace(/_/g, " ")}
+                </Badge>
+              </div>
+
+              <div className="p-3 rounded-lg border bg-card/60">
+                <span className="text-[10px] uppercase font-semibold text-muted-foreground block">AI Confidence Score</span>
+                <span className="text-xl font-bold font-mono text-primary mt-1 block">
+                  {(aiAnalysis.aiConfidence * 100).toFixed(1)}%
+                </span>
+              </div>
+
+              <div className="p-3 rounded-lg border bg-card/60">
+                <span className="text-[10px] uppercase font-semibold text-muted-foreground block">Suggested Master Record</span>
+                <span className="text-sm font-bold mt-1 block text-indigo-600 dark:text-indigo-400">
+                  {aiAnalysis.suggestedMasterRecord === "RECORD_B" ? "Record B (Candidate)" : "Record A (Primary)"}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5 bg-card/40 p-3 rounded-lg border">
+              <span className="text-xs font-semibold text-muted-foreground uppercase">Reasoning Summary</span>
+              <p className="text-xs leading-relaxed text-foreground/90">{aiAnalysis.reasoningSummary}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-1.5 p-3 rounded-lg border bg-card/40">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Key Agreements:</span>
+                <ul className="text-xs space-y-1 text-muted-foreground list-disc list-inside">
+                  {aiAnalysis.keyAgreements.map((item: string, i: number) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-1.5 p-3 rounded-lg border bg-card/40">
+                <span className="text-xs font-semibold text-amber-600 dark:text-amber-400">Discrepancy Analysis:</span>
+                <ul className="text-xs space-y-1 text-muted-foreground list-disc list-inside">
+                  {aiAnalysis.discrepancyAnalysis.length > 0 ? (
+                    aiAnalysis.discrepancyAnalysis.map((item: string, i: number) => (
+                      <li key={i}>{item}</li>
+                    ))
+                  ) : (
+                    <li>No significant conflicting attributes detected.</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/30">
+              <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 block mb-0.5">Recommended Action:</span>
+              <p className="text-xs text-foreground/90">{aiAnalysis.mergeRecommendation}</p>
+            </div>
+          </CardContent>
+        )}
       </Card>
 
       {/* Side-by-Side Attributes Table */}

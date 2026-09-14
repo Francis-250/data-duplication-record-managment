@@ -1,13 +1,16 @@
-import { getModelEvaluationMetricsData } from "@/actions/admin/operations";
+import { getModelEvaluationMetricsData, getAiAdminEvaluationInsights } from "@/actions/admin/operations";
 import { requireAdminPage } from "@/lib/admin-auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Sparkles, CheckCircle2, AlertCircle, BarChart3, Info } from "lucide-react";
+import { Bot, Info } from "lucide-react";
 
 export default async function ModelEvaluationPage() {
   await requireAdminPage();
-  const data = await getModelEvaluationMetricsData();
+  const [data, aiInsights] = await Promise.all([
+    getModelEvaluationMetricsData(),
+    getAiAdminEvaluationInsights(),
+  ]);
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -120,6 +123,58 @@ export default async function ModelEvaluationPage() {
                 {data.tn}
               </span>
               <span className="text-[10px] text-muted-foreground mt-1 block">Actual Non-Match → Predicted Non-Match</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* AI Strategic Model Audit (Powered by GROQ_MODEL openai/gpt-oss-120b) */}
+      <Card className="border-indigo-500/40 bg-gradient-to-r from-indigo-950/10 via-background to-blue-950/10">
+        <CardHeader className="pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-indigo-500" />
+              <CardTitle className="text-base font-semibold">AI Strategic Model Audit & Calibration</CardTitle>
+              <Badge variant="outline" className="text-[10px] border-indigo-500/50 text-indigo-600 dark:text-indigo-400 font-mono">
+                {aiInsights.modelUsed}
+              </Badge>
+            </div>
+            <Badge className="bg-indigo-600 text-white text-[10px] self-start sm:self-auto">
+              Live AI Audit
+            </Badge>
+          </div>
+          <CardDescription className="text-xs">
+            Automated reasoning analysis of model precision, recall trade-offs, and threshold calibration for Rwandan student records.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="p-3.5 rounded-lg border bg-card/60 space-y-1">
+            <span className="text-xs font-semibold text-muted-foreground uppercase block">Pipeline Health Assessment</span>
+            <p className="text-xs leading-relaxed text-foreground/90">{aiInsights.auditSummary}</p>
+          </div>
+
+          <div className="p-3.5 rounded-lg border border-indigo-500/30 bg-indigo-500/5 space-y-1">
+            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase block">Threshold Calibration Advice</span>
+            <p className="text-xs leading-relaxed text-foreground/90">{aiInsights.thresholdCalibration}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5 p-3 rounded-lg border bg-card/40">
+              <span className="text-xs font-semibold text-amber-600 dark:text-amber-400">High-Risk Ambiguity Patterns:</span>
+              <ul className="text-xs space-y-1 text-muted-foreground list-disc list-inside">
+                {aiInsights.highRiskPatterns.map((p, i) => (
+                  <li key={i}>{p}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="space-y-1.5 p-3 rounded-lg border bg-card/40">
+              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Recommended Executive Actions:</span>
+              <ul className="text-xs space-y-1 text-muted-foreground list-disc list-inside">
+                {aiInsights.recommendedActions.map((a, i) => (
+                  <li key={i}>{a}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </CardContent>

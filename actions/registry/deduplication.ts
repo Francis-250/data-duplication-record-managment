@@ -7,6 +7,7 @@ import { generateCandidatePairs } from "@/lib/deduplication/blocking";
 import { compareRecordPair } from "@/lib/deduplication/matching-engine";
 import { recordDeduplicationAudit } from "@/lib/deduplication/audit";
 import { MatchClassification, MatchReviewStatus, MatchRunStatus, Prisma } from "@prisma/client";
+import { analyzeRecordPairWithAi, suggestMergePreservationWithAi } from "@/lib/ai";
 
 export interface RunDeduplicationParams {
   datasetImportId?: string;
@@ -543,4 +544,54 @@ export async function getMergedRecords(page = 1, pageSize = 15) {
     pageSize,
     totalPages: Math.ceil(total / pageSize),
   };
+}
+
+export async function getAiCandidateAnalysis(candidateId: string) {
+  await requireRegistryAction();
+
+  const candidate = await prisma.matchCandidate.findUnique({
+    where: { id: candidateId },
+    include: {
+      recordA: true,
+      recordB: true,
+      fieldComparisons: true,
+    },
+  });
+
+  if (!candidate) {
+    throw new Error("Match candidate record not found.");
+  }
+
+  const aiResult = await analyzeRecordPairWithAi({
+    recordA: candidate.recordA,
+    recordB: candidate.recordB,
+    fieldComparisons: candidate.fieldComparisons,
+    overallScore: candidate.overallScore,
+    classification: candidate.classification,
+  });
+
+  return aiResult;
+}
+
+export async function getAiMergeSuggestions(candidateId: string) {
+  await requireRegistryAction();
+
+  const candidate = await prisma.matchCandidate.findUnique({
+    where: { id: candidateId },
+    include: {
+      recordA: true,
+      recordB: true,
+    },
+  });
+
+  if (!candidate) {
+    throw new Error("Match candidate record not found.");
+  }
+
+  const aiResult = await suggestMergePreservationWithAi({
+    recordA: candidate.recordA,
+    recordB: candidate.recordB,
+  });
+
+  return aiResult;
 }

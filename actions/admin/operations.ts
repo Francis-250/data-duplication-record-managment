@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { requireAdminAction } from "@/lib/admin-auth";
 import { recordDeduplicationAudit } from "@/lib/deduplication/audit";
 import { MatchClassification, MatchReviewStatus, Prisma } from "@prisma/client";
+import { generateAdminAiEvaluationInsights } from "@/lib/ai";
 
 export async function getAdminReports() {
   await requireAdminAction();
@@ -376,7 +377,7 @@ export async function getModelEvaluationMetricsData() {
     if (isPredictedMatch && isActualMatch) tp++;
     else if (isPredictedMatch && !isActualMatch) fp++;
     else if (!isPredictedMatch && !isActualMatch) tn++;
-    else if (!isPredictedMatch && !isActualMatch) fn++;
+    else if (!isPredictedMatch && isActualMatch) fn++;
   }
 
   // Baseline calibration if sample size is currently small
@@ -410,4 +411,24 @@ export async function getModelEvaluationMetricsData() {
       { name: "Deterministic Rule-based Matching", accuracy: 84.1, f1Score: 81.5, speed: "< 20ms / 1k pairs", status: "Baseline" },
     ],
   };
+}
+
+export async function getAiAdminEvaluationInsights() {
+  await requireAdminAction();
+  const metrics = await getModelEvaluationMetricsData();
+
+  const aiInsights = await generateAdminAiEvaluationInsights({
+    accuracy: metrics.accuracy / 100,
+    precision: metrics.precision / 100,
+    recall: metrics.recall / 100,
+    f1Score: metrics.f1Score / 100,
+    specificity: metrics.totalEvaluated > 0 ? (metrics.tn / (metrics.tn + metrics.fp || 1)) : 0.95,
+    tp: metrics.tp,
+    fp: metrics.fp,
+    tn: metrics.tn,
+    fn: metrics.fn,
+    totalEvaluated: metrics.totalEvaluated,
+  });
+
+  return aiInsights;
 }

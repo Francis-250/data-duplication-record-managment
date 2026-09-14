@@ -3,26 +3,25 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { mergeConfirmedRecords } from "@/actions/registry/deduplication";
+import { mergeConfirmedRecords, getAiMergeSuggestions } from "@/actions/registry/deduplication";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   ArrowLeft,
   Layers,
-  CheckCircle2,
-  AlertTriangle,
   ShieldCheck,
-  Building2,
+  Sparkles,
+  Loader2,
   Check,
 } from "lucide-react";
 
 export function RegistryMergeTool({ candidate }: { candidate: any }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [isAiSelecting, setIsAiSelecting] = useState(false);
 
   const recordA = candidate.recordA;
   const recordB = candidate.recordB;
@@ -32,6 +31,33 @@ export function RegistryMergeTool({ candidate }: { candidate: any }) {
   const [mergeReason, setMergeReason] = useState(
     "Confirmed identical student duplicate entries consolidated into master record."
   );
+
+  const handleAiAutoSelect = async () => {
+    setIsAiSelecting(true);
+    try {
+      const aiResult = await getAiMergeSuggestions(candidate.id);
+      if (aiResult.recommendedMaster === "B") {
+        setMasterRecordId(recordB.id);
+      } else {
+        setMasterRecordId(recordA.id);
+      }
+
+      setSelectedFields((prev) => ({
+        ...prev,
+        ...aiResult.recommendedValues,
+      }));
+
+      if (aiResult.mergeReason) {
+        setMergeReason(aiResult.mergeReason);
+      }
+
+      toast.success("AI (openai/gpt-oss-120b) recommended best values and justification.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to get AI merge suggestions.");
+    } finally {
+      setIsAiSelecting(false);
+    }
+  };
 
   // Field selection state: For each field, which record value is preserved
   // Initialize with non-empty values preferring Record A
@@ -196,10 +222,34 @@ export function RegistryMergeTool({ candidate }: { candidate: any }) {
       {/* Field-by-Field Value Picker */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold">2. Select Correct Values for Master Record</CardTitle>
-          <CardDescription className="text-xs">
-            Click on either Record A or Record B values to select which value will be preserved in the consolidated master record.
-          </CardDescription>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <CardTitle className="text-base font-semibold">2. Select Correct Values for Master Record</CardTitle>
+              <CardDescription className="text-xs">
+                Click on either Record A or Record B values to select which value will be preserved in the consolidated master record.
+              </CardDescription>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={isAiSelecting || pending}
+              onClick={handleAiAutoSelect}
+              className="border-indigo-500/50 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
+            >
+              {isAiSelecting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  AI Evaluating Fields...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4 text-amber-500" />
+                  AI Auto-Select Best Values (120B)
+                </>
+              )}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-3">
           {fieldsConfig.map(({ key, label, isDate }) => {
