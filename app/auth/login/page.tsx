@@ -31,7 +31,10 @@ export default function LoginForm() {
     setLoginError(null);
     setLoading(true);
     try {
-      const { data, error } = await authClient.signIn.email({ email, password });
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
+      });
       if (error) {
         const message = error.message || "Invalid email or password.";
         setLoginError(message);
@@ -62,22 +65,21 @@ export default function LoginForm() {
     }
   };
 
-  const handleGoogle = async () => {
-    try {
-      const { error } = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/auth/callback",
-      });
-      if (error) toast.error(error?.message || "Failed to sign in with Google");
-    } catch {
-      toast.error("Something went wrong");
-    }
-  };
+  // const handleGoogle = async () => {
+  //   try {
+  //     const { error } = await authClient.signIn.social({
+  //       provider: "google",
+  //       callbackURL: "/auth/callback",
+  //     });
+  //     if (error) toast.error(error?.message || "Failed to sign in with Google");
+  //   } catch {
+  //     toast.error("Something went wrong");
+  //   }
+  // };
 
   return (
     <main className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="grid w-full max-w-5xl gap-12 lg:grid-cols-2 lg:items-center">
-
         {/* Left */}
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-background text-xs font-medium text-muted-foreground mb-4">
@@ -87,11 +89,16 @@ export default function LoginForm() {
             Data Deduplication & Record Matching
           </h1>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-            Sign in to access your portal: submit student records, import institutional datasets, run deduplication algorithms, and review matching candidates.
+            Sign in to access your portal: submit student records, import
+            institutional datasets, run deduplication algorithms, and review
+            matching candidates.
           </p>
           <p className="mt-10 text-sm text-muted-foreground">
             Need an account?{" "}
-            <Link href="/auth/register" className="font-medium text-foreground underline underline-offset-4">
+            <Link
+              href="/auth/register"
+              className="font-medium text-foreground underline underline-offset-4"
+            >
               Register here
             </Link>
           </p>
@@ -103,7 +110,9 @@ export default function LoginForm() {
 
           <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs">Email</Label>
+              <Label htmlFor="email" className="text-xs">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -116,7 +125,9 @@ export default function LoginForm() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-xs">Password</Label>
+              <Label htmlFor="password" className="text-xs">
+                Password
+              </Label>
               <Input
                 id="password"
                 type="password"
@@ -135,7 +146,10 @@ export default function LoginForm() {
                   checked={rememberMe}
                   onCheckedChange={(v) => setRememberMe(!!v)}
                 />
-                <Label htmlFor="remember" className="text-xs text-muted-foreground cursor-pointer font-normal">
+                <Label
+                  htmlFor="remember"
+                  className="text-xs text-muted-foreground cursor-pointer font-normal"
+                >
                   Remember me
                 </Label>
               </div>
@@ -148,10 +162,11 @@ export default function LoginForm() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading
-                ? <span className="h-3.5 w-3.5 rounded-full border-2 border-background/40 border-t-background animate-spin" />
-                : "Sign in"
-              }
+              {loading ? (
+                <span className="h-3.5 w-3.5 rounded-full border-2 border-background/40 border-t-background animate-spin" />
+              ) : (
+                "Sign in"
+              )}
             </Button>
             {loginError && (
               <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
@@ -159,14 +174,14 @@ export default function LoginForm() {
               </p>
             )}
           </form>
-
+          {/* 
           <div className="my-6 flex items-center gap-3">
             <Separator className="flex-1" />
             <span className="text-xs text-muted-foreground">or</span>
             <Separator className="flex-1" />
-          </div>
+          </div> */}
 
-          <Button variant="outline" className="w-full text-sm" onClick={handleGoogle}>
+          {/* <Button variant="outline" className="w-full text-sm" onClick={handleGoogle}>
             <svg xmlns="http://www.w3.org/2000/svg" className="size-4 mr-2" viewBox="0 0 512 512" aria-hidden="true">
               <path fill="#fbbd00" d="M120 256c0-25.367 6.989-49.13 19.131-69.477v-86.308H52.823C18.568 144.703 0 198.922 0 256s18.568 111.297 52.823 155.785h86.308v-86.308C126.989 305.13 120 281.367 120 256z"/>
               <path fill="#0f9d58" d="m256 392-60 60 60 60c57.079 0 111.297-18.568 155.785-52.823v-86.216h-86.216C305.044 385.147 281.181 392 256 392z"/>
@@ -176,9 +191,8 @@ export default function LoginForm() {
               <path fill="#eb4132" d="M256 120V0C187.62 0 123.333 26.629 74.98 74.98a259.849 259.849 0 0 0-22.158 25.235l86.308 86.308C162.883 146.72 206.376 120 256 120z"/>
             </svg>
             Sign in with Google
-          </Button>
+          </Button> */}
         </div>
-
       </div>
     </main>
   );
