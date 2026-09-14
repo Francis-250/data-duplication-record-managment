@@ -816,7 +816,12 @@ async function main() {
 
 main()
   .catch((error) => {
-    console.error("Seed Error:", error);
+    console.error("Seed Error message:", error?.message);
+    console.error("Seed Error stack:", error?.stack);
+    console.error(
+      "Seed Error full:",
+      JSON.stringify(error, Object.getOwnPropertyNames(error)),
+    );
     process.exitCode = 1;
   })
   .finally(async () => {
