@@ -82,7 +82,7 @@ export function compareRecordPair(
   const matchThreshold = options.matchThreshold ?? 0.80;
   const possibleThreshold = options.possibleThreshold ?? 0.52;
   const algorithm = options.algorithm ?? "Hybrid Fellegi-Sunter & Token Similarity";
-  const modelVersion = "v2.4-UOK-ML";
+  const modelVersion = "v2.4-DEDUP-ML";
 
   const comparisons: EvaluatedFieldComparison[] = [];
   const explanations: string[] = [];

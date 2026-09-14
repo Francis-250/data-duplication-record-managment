@@ -76,7 +76,7 @@ export function RegistryMergeTool({ candidate }: { candidate: any }) {
     programme: recordA.programme || recordB.programme || "",
     department: recordA.department || recordB.department || "",
     faculty: recordA.faculty || recordB.faculty || "",
-    campus: recordA.campus || recordB.campus || "Kigali Campus",
+    campus: recordA.campus || recordB.campus || "Main Campus",
     intake: recordA.intake || recordB.intake || "",
     academicYear: recordA.academicYear || recordB.academicYear || "",
     address: recordA.address || recordB.address || "",

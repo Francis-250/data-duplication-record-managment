@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  School,
+  Layers,
   ArrowRight,
   ShieldCheck,
   GraduationCap,
@@ -45,11 +45,11 @@ export default function HomePage() {
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
-              <School size={18} />
+              <Layers size={18} />
             </span>
             <div>
-              <span className="text-sm font-bold tracking-tight block">University of Kigali</span>
-              <span className="text-[10px] text-muted-foreground block -mt-0.5">Record Deduplication System</span>
+              <span className="text-sm font-bold tracking-tight block">DATA DEDUPLICATION AND RECORD MATCHING SYSTEM</span>
+              <span className="text-[10px] text-muted-foreground block -mt-0.5">Enterprise Entity Resolution Platform</span>
             </div>
           </Link>
 
@@ -79,7 +79,7 @@ export default function HomePage() {
             Identify and resolve duplicate student records with precision.
           </h1>
           <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xl mx-auto">
-            Standardize student data across campus registries, resolve spelling differences, typographical errors, and identifier variations, with secure human-in-the-loop consolidation.
+            Standardize student data across institutional registries, resolve spelling differences, typographical errors, and identifier variations, with secure human-in-the-loop consolidation.
           </p>
           <div className="mt-5 flex items-center justify-center gap-3">
             <Button asChild size="sm" className="shadow-xs px-5">
@@ -130,9 +130,9 @@ export default function HomePage() {
       <footer className="h-12 flex-none border-t bg-muted/20">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 text-[11px] text-muted-foreground">
           <div className="flex items-center gap-2">
-            <School size={13} className="text-primary" />
-            <span className="font-semibold text-foreground">University of Kigali</span>
-            <span className="hidden sm:inline">· Student Admissions & Deduplication Platform</span>
+            <Layers size={13} className="text-primary" />
+            <span className="font-semibold text-foreground">DATA DEDUPLICATION AND RECORD MATCHING SYSTEM</span>
+            <span className="hidden sm:inline">· Admissions & Registry Entity Resolution</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/auth/login" className="hover:text-foreground transition-colors">

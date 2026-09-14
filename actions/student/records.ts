@@ -71,7 +71,7 @@ export async function submitStudentRecord(input: SubmitStudentRecordInput) {
       programme: input.programme || null,
       department: input.department || null,
       faculty: input.faculty || null,
-      campus: input.campus || "Kigali Campus",
+      campus: input.campus || "Main Campus",
       intake: input.intake || null,
       academicYear: input.academicYear || "2024/2025",
       address: input.address || null,

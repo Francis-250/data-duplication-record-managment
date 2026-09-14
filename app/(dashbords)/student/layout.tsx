@@ -10,7 +10,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
       <StudentSidebar name={session.user.name} />
       <div className="lg:pl-60 flex flex-col min-h-screen">
         <DashboardHeader
-          title="University of Kigali - Student Record Portal"
+          title="DATA DEDUPLICATION AND RECORD MATCHING SYSTEM - Student Portal"
           user={{
             name: session.user.name,
             email: session.user.email,

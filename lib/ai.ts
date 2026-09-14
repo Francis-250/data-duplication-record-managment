@@ -76,7 +76,7 @@ export async function analyzeRecordPairWithAi(params: {
   const modelName = getGroqModelName();
   const chat = getGroqClient(0.15, 2000);
 
-  const systemPrompt = `You are a Senior Academic Registrar, Entity Resolution Specialist, and Identity Verification Expert at the University of Kigali (UoK) in Rwanda.
+  const systemPrompt = `You are a Senior Academic Registrar, Entity Resolution Specialist, and Identity Verification Expert at the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM.
 Your task is to analyze candidate duplicate student records that have been flagged by the institutional deduplication engine.
 
 Consider Rwandan context:
@@ -145,7 +145,7 @@ Initial Classification: ${params.classification || "N/A"}`;
       modelUsed: modelName,
       duplicateVerdict: parsed.duplicateVerdict || "PROBABLE_DUPLICATE",
       aiConfidence: typeof parsed.aiConfidence === "number" ? parsed.aiConfidence : 0.85,
-      reasoningSummary: parsed.reasoningSummary || "AI analysis completed based on University of Kigali identity criteria.",
+      reasoningSummary: parsed.reasoningSummary || "AI analysis completed based on DATA DEDUPLICATION AND RECORD MATCHING SYSTEM identity criteria.",
       keyAgreements: Array.isArray(parsed.keyAgreements) ? parsed.keyAgreements : ["Identifiers matched across records."],
       discrepancyAnalysis: Array.isArray(parsed.discrepancyAnalysis) ? parsed.discrepancyAnalysis : [],
       mergeRecommendation: parsed.mergeRecommendation || "Proceed with non-destructive merge review in the Registry portal.",
@@ -184,7 +184,7 @@ export async function suggestMergePreservationWithAi(params: {
   const modelName = getGroqModelName();
   const chat = getGroqClient(0.1, 1500);
 
-  const systemPrompt = `You are a University of Kigali registry deduplication officer.
+  const systemPrompt = `You are a DATA DEDUPLICATION AND RECORD MATCHING SYSTEM registry deduplication officer.
 Given two student records to merge, choose the most complete, accurate, standardized, and official value for each field.
 Return ONLY valid JSON matching:
 {
@@ -253,7 +253,7 @@ Return ONLY valid JSON matching:
       recommendedValues,
       mergeReason:
         parsed.mergeReason ||
-        "Consolidated duplicate student records into a verified master record per UoK Registry guidelines.",
+        "Consolidated duplicate student records into a verified master record per registry guidelines.",
     };
   } catch (err) {
     console.error(`[AI Merge Suggestion Error (${modelName})]:`, err);
@@ -304,7 +304,7 @@ export async function generateAdminAiEvaluationInsights(metrics: {
   const modelName = getGroqModelName();
   const chat = getGroqClient(0.2, 1800);
 
-  const systemPrompt = `You are a Machine Learning & Identity Deduplication Principal Architect advising the University of Kigali Directorate of ICT.
+  const systemPrompt = `You are a Machine Learning & Identity Deduplication Principal Architect advising the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM Directorate.
 Analyze the provided deduplication confusion matrix and metrics.
 Return ONLY valid JSON matching:
 {

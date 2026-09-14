@@ -6,25 +6,24 @@ import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: {
-    default: "University of Kigali | Data Deduplication & Record Matching System",
-    template: "%s | UoK Record Deduplication",
+    default: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
+    template: "%s | DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
   },
   description:
-    "Institutional Data Deduplication and Record Matching System for the University of Kigali (UoK). Identifies duplicate and matching student records, standardizes institutional data, computes similarity scores, and enables non-destructive record consolidation.",
-  applicationName: "UoK Record Deduplication",
-  authors: [{ name: "University of Kigali Directorate of ICT & Academic Registry" }],
-  creator: "University of Kigali",
-  publisher: "University of Kigali",
+    "Institutional DATA DEDUPLICATION AND RECORD MATCHING SYSTEM. Identifies duplicate and matching student records, standardizes institutional data, computes similarity scores, and enables non-destructive record consolidation.",
+  applicationName: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
+  authors: [{ name: "Registry & Identity Verification Systems" }],
+  creator: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
+  publisher: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
   keywords: [
-    "University of Kigali",
-    "UoK",
+    "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
     "Data Deduplication",
     "Record Matching",
     "Entity Resolution",
     "Student Information System",
     "Academic Registry",
     "Fellegi-Sunter",
-    "Rwanda Higher Education",
+    "Record Linkage",
   ],
   icons: {
     icon: [
@@ -34,11 +33,10 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "University of Kigali — Data Deduplication & Record Matching System",
+    title: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
     description:
-      "Enterprise student record matching, similarity analysis, and non-destructive record consolidation for the University of Kigali.",
-    siteName: "UoK Record Deduplication",
-    locale: "en_RW",
+      "Enterprise record matching, similarity analysis, and non-destructive record consolidation.",
+    siteName: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
     type: "website",
   },
 };

@@ -39,7 +39,7 @@ export function AdminSettingsClient({ initialSettings }: { initialSettings: Reco
             <CardTitle className="text-base font-semibold">Algorithm & Classification Thresholds</CardTitle>
           </div>
           <CardDescription className="text-xs">
-            Global defaults utilized by the University of Kigali Record Deduplication Engine.
+            Global defaults utilized by the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -131,7 +131,7 @@ export function AdminSettingsClient({ initialSettings }: { initialSettings: Reco
               <Label htmlFor="primaryCampus" className="text-xs font-semibold">Primary Campus Default</Label>
               <Input
                 id="primaryCampus"
-                defaultValue={settings.primary_campus?.value || "Kigali Campus (Kacyiru)"}
+                defaultValue={settings.primary_campus?.value || "Main Campus"}
                 className="text-xs"
                 onBlur={(e) =>
                   handleSave(
@@ -154,7 +154,7 @@ export function AdminSettingsClient({ initialSettings }: { initialSettings: Reco
             <CardTitle className="text-base font-semibold">Institutional Configuration</CardTitle>
           </div>
           <CardDescription className="text-xs">
-            University Registry branding and policy parameters.
+            Institutional Registry branding and policy parameters.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -163,7 +163,7 @@ export function AdminSettingsClient({ initialSettings }: { initialSettings: Reco
               <Label htmlFor="instName" className="text-xs font-semibold">Institution Name</Label>
               <Input
                 id="instName"
-                defaultValue={settings.institution_name?.value || "University of Kigali"}
+                defaultValue={settings.institution_name?.value || "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM"}
                 className="text-xs"
                 onBlur={(e) =>
                   handleSave(

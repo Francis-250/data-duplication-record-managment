@@ -10,7 +10,7 @@ export default async function RegistryLayout({ children }: { children: React.Rea
       <RegistrySidebar name={session.user.name} />
       <div className="lg:pl-60 flex flex-col min-h-screen">
         <DashboardHeader
-          title="University of Kigali - Registry Staff Portal"
+          title="DATA DEDUPLICATION AND RECORD MATCHING SYSTEM - Staff Portal"
           user={{
             name: session.user.name,
             email: session.user.email,

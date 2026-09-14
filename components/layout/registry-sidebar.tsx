@@ -48,11 +48,11 @@ function RegistryNavContent({ name, mobile = false }: { name: string; mobile?: b
     <div className="flex h-full flex-col bg-card border-r">
       <div className="h-16 border-b px-4 flex items-center gap-2.5">
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <School size={16} />
+          <Building2 size={16} />
         </div>
         <div>
-          <p className="text-xs font-bold tracking-tight uppercase leading-none">University of Kigali</p>
-          <p className="text-[10px] text-muted-foreground mt-1">Registry Staff Portal</p>
+          <p className="text-[11px] font-bold tracking-tight uppercase leading-tight line-clamp-1">DATA DEDUPLICATION AND RECORD MATCHING SYSTEM</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">Registry Staff Portal</p>
         </div>
       </div>
 
@@ -127,7 +127,7 @@ export function RegistrySidebar({ name }: { name: string }) {
           </SheetContent>
         </Sheet>
         <div className="ml-2">
-          <p className="text-xs font-bold tracking-tight">University of Kigali</p>
+          <p className="text-xs font-bold tracking-tight">DATA DEDUPLICATION AND RECORD MATCHING SYSTEM</p>
           <p className="text-[10px] text-muted-foreground">Registry Portal</p>
         </div>
       </header>

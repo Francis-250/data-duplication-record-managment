@@ -16,7 +16,7 @@ export default async function RegistryMergedRecordsPage() {
       <div className="border-b pb-4">
         <h2 className="text-xl font-bold tracking-tight">Consolidated Master Records History</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Audit trail and traceability of merged duplicate records in the University of Kigali registry.
+          Audit trail and traceability of merged duplicate records in the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM registry.
         </p>
       </div>
 

@@ -47,7 +47,7 @@ export async function runDeduplicationPipeline(params: RunDeduplicationParams = 
       startedById: session.user.id,
       status: MatchRunStatus.PROCESSING,
       algorithm,
-      modelVersion: "v2.4-UOK-ML",
+      modelVersion: "v2.4-DEDUP-ML",
       matchThreshold,
       possibleThreshold,
       startedAt: new Date(),

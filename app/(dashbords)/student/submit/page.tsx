@@ -31,10 +31,10 @@ export default function SubmitStudentRecordPage() {
     programme: "Bachelor of Science in Information Technology",
     department: "Information Technology",
     faculty: "Faculty of Computing & Information Technology",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September Intake",
     academicYear: "2024/2025",
-    address: "Kigali, Rwanda",
+    address: "Central District",
   });
 
   const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
@@ -96,7 +96,7 @@ export default function SubmitStudentRecordPage() {
         <div>
           <h2 className="text-xl font-bold tracking-tight">Register Student Record</h2>
           <p className="text-xs text-muted-foreground">
-            Submit your official student academic and personal information to University of Kigali registry.
+            Submit your official student academic and personal information to the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM registry.
           </p>
         </div>
       </div>
@@ -205,7 +205,7 @@ export default function SubmitStudentRecordPage() {
               <Label htmlFor="registrationNumber" className="text-xs">Registration Number</Label>
               <Input
                 id="registrationNumber"
-                placeholder="e.g. UOK/2024/BIT/042"
+                placeholder="e.g. REG/2024/BIT/042"
                 value={formData.registrationNumber}
                 onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
               />
@@ -251,8 +251,8 @@ export default function SubmitStudentRecordPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Kigali Campus (Kacyiru)">Kigali Campus (Kacyiru)</SelectItem>
-                  <SelectItem value="Musanze Campus">Musanze Campus</SelectItem>
+                  <SelectItem value="Main Campus">Main Campus</SelectItem>
+                  <SelectItem value="North Campus">North Campus</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -283,7 +283,7 @@ export default function SubmitStudentRecordPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="student@uok.ac.rw"
+                placeholder="student@dedup.system"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />

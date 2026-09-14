@@ -17,7 +17,7 @@ export default async function RegistryRecordsPage() {
       <div className="border-b pb-4">
         <h2 className="text-xl font-bold tracking-tight">Student Records Registry</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Complete master and institutional records of University of Kigali students across all campuses.
+          Complete master and institutional records of the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM across all campuses.
         </p>
       </div>
 

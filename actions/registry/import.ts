@@ -144,7 +144,7 @@ export async function commitDatasetImport(datasetImportId: string) {
             programme: row.programme,
             department: row.department,
             faculty: row.faculty,
-            campus: row.campus || "Kigali Campus",
+            campus: row.campus || "Main Campus",
             intake: row.intake,
             academicYear: row.academicYear,
             address: row.address,

@@ -123,7 +123,7 @@ export function RegistryRecordsClient({ initialRecords }: { initialRecords: any[
                   <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">
                     {record.programme || "--"}
                   </TableCell>
-                  <TableCell className="text-xs">{record.campus || "Kigali Campus"}</TableCell>
+                  <TableCell className="text-xs">{record.campus || "Main Campus"}</TableCell>
                   <TableCell className="font-mono text-xs text-muted-foreground">
                     {record.nationalId || "--"}
                   </TableCell>

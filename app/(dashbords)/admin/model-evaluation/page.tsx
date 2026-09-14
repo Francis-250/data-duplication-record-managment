@@ -17,7 +17,7 @@ export default async function ModelEvaluationPage() {
       <div className="border-b pb-4">
         <h2 className="text-xl font-bold tracking-tight">Machine Learning & Record Linkage Model Evaluation</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Benchmarking of multi-attribute similarity classifiers, Fellegi-Sunter log-likelihood linkage, and supervised ML models for University of Kigali student deduplication.
+          Benchmarking of multi-attribute similarity classifiers, Fellegi-Sunter log-likelihood linkage, and supervised ML models for the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM.
         </p>
       </div>
 
@@ -185,7 +185,7 @@ export default async function ModelEvaluationPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-semibold">Algorithm Benchmark Comparison</CardTitle>
           <CardDescription className="text-xs">
-            Performance comparison of record matching models across University of Kigali student datasets.
+            Performance comparison of record matching models across DATA DEDUPLICATION AND RECORD MATCHING SYSTEM datasets.
           </CardDescription>
         </CardHeader>
         <CardContent>

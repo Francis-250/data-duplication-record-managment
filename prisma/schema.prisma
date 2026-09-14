@@ -101,7 +101,7 @@ model TwoFactor {
 }
 
 // -----------------------------------------------------------------------------
-// University of Kigali — Data Deduplication & Record Matching Enums
+// DATA DEDUPLICATION AND RECORD MATCHING SYSTEM — Enums
 // -----------------------------------------------------------------------------
 
 enum InstitutionalRecordType {
@@ -150,7 +150,7 @@ enum MatchRunStatus {
 }
 
 // -----------------------------------------------------------------------------
-// University of Kigali — Data Deduplication & Record Matching Models
+// DATA DEDUPLICATION AND RECORD MATCHING SYSTEM — Models
 // -----------------------------------------------------------------------------
 
 model InstitutionalRecord {

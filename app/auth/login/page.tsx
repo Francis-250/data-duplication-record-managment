@@ -83,7 +83,7 @@ export default function LoginForm() {
         {/* Left */}
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-background text-xs font-medium text-muted-foreground mb-4">
-            University of Kigali
+            DATA DEDUPLICATION AND RECORD MATCHING SYSTEM
           </div>
           <h1 className="text-4xl font-semibold tracking-tight leading-tight mb-4">
             Data Deduplication & Record Matching

@@ -423,7 +423,7 @@ export function parseAndValidateCsv(csvContent: string, sourceName = "CSV Import
         programme: rowData.programme || null,
         department: rowData.department || null,
         faculty: rowData.faculty || null,
-        campus: rowData.campus || "Kigali Campus",
+        campus: rowData.campus || "Main Campus",
         intake: rowData.intake || null,
         academicYear: rowData.academicYear || "2024/2025",
         address: rowData.address || null,

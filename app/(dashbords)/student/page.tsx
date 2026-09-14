@@ -29,7 +29,7 @@ export default async function StudentDashboard() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Student Record Portal</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Welcome, {session.user.name}. Manage your University of Kigali institutional records and verify duplicate status.
+            Welcome, {session.user.name}. Manage your DATA DEDUPLICATION AND RECORD MATCHING SYSTEM records and verify duplicate status.
           </p>
         </div>
         <div className="flex flex-wrap gap-2.5">
@@ -89,7 +89,7 @@ export default async function StudentDashboard() {
             <div>
               <CardTitle className="text-base font-semibold">Your Institutional Records</CardTitle>
               <CardDescription>
-                Official academic records registered in the University of Kigali deduplication system.
+                Official academic records registered in the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM.
               </CardDescription>
             </div>
             <Badge variant="outline">{records.length} records</Badge>
@@ -132,7 +132,7 @@ export default async function StudentDashboard() {
                       </TableCell>
                       <TableCell className="font-medium">{r.fullName}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{r.programme || "--"}</TableCell>
-                      <TableCell className="text-xs">{r.campus || "Kigali Campus"}</TableCell>
+                      <TableCell className="text-xs">{r.campus || "Main Campus"}</TableCell>
                       <TableCell className="text-xs font-mono">{r.academicYear || "--"}</TableCell>
                       <TableCell className="font-mono text-xs text-muted-foreground">
                         {r.nationalId ? `${r.nationalId.slice(0, 4)}...${r.nationalId.slice(-4)}` : "--"}

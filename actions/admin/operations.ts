@@ -174,8 +174,8 @@ export async function getDeduplicationSettings() {
     default_algorithm: "Hybrid Fellegi-Sunter & Token Similarity",
     exhaustive_threshold: "300",
     auto_flag_identical_nid: "true",
-    institution_name: "University of Kigali",
-    primary_campus: "Kigali Campus (Kacyiru)",
+    institution_name: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
+    primary_campus: "Main Campus",
   };
 
   const map: Record<string, { value: string; description: string | null; id?: string }> = {};

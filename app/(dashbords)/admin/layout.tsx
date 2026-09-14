@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AdminSidebar name={session.user.name} />
       <div className="lg:pl-60 flex flex-col min-h-screen">
         <DashboardHeader
-          title="University of Kigali - Registry Administration"
+          title="DATA DEDUPLICATION AND RECORD MATCHING SYSTEM - Administration"
           user={{
             name: session.user.name,
             email: session.user.email,

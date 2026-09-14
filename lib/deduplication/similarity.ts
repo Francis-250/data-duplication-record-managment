@@ -1,5 +1,5 @@
 /**
- * Similarity Algorithms for University of Kigali Record Deduplication System:
+ * Similarity Algorithms for the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM:
  * - Exact Match & Case-Insensitive Match
  * - Jaro-Winkler Similarity
  * - Levenshtein Distance & Normalized Similarity

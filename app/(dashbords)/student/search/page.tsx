@@ -31,7 +31,7 @@ export default function StudentSearchRecordsPage() {
       <div className="border-b pb-4">
         <h2 className="text-xl font-bold tracking-tight">Institutional Record Directory</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Search University of Kigali verified student records and academic enrollment information.
+          Search DATA DEDUPLICATION AND RECORD MATCHING SYSTEM verified student records and academic enrollment information.
         </p>
       </div>
 
@@ -40,7 +40,7 @@ export default function StudentSearchRecordsPage() {
         <div>
           <p className="font-semibold text-sm">Protected Privacy View</p>
           <p className="mt-1 leading-relaxed">
-            In compliance with the University Data Protection Policy, private contact details, national identity numbers, and addresses of other students are protected and withheld from student view.
+            In compliance with the Institutional Data Protection Policy, private contact details, national identity numbers, and addresses of other students are protected and withheld from student view.
           </p>
         </div>
       </div>
@@ -59,7 +59,7 @@ export default function StudentSearchRecordsPage() {
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by student name, registration number (e.g. UOK/2024/BIT/042), or programme..."
+                placeholder="Search by student name, registration number (e.g. REG/2024/BIT/042), or programme..."
                 className="pl-9 h-10 text-sm"
               />
             </div>
@@ -112,7 +112,7 @@ export default function StudentSearchRecordsPage() {
                         <TableCell className="text-xs text-muted-foreground">
                           {item.programme || "--"}
                         </TableCell>
-                        <TableCell className="text-xs">{item.campus || "Kigali Campus"}</TableCell>
+                        <TableCell className="text-xs">{item.campus || "Main Campus"}</TableCell>
                         <TableCell className="font-mono text-xs text-muted-foreground">
                           {item.academicYear || "--"}
                         </TableCell>

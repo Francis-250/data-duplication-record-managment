@@ -1,5 +1,5 @@
 /**
- * Data standardization utilities for the University of Kigali Record Deduplication System.
+ * Data standardization utilities for the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM.
  * Standardizes names, phones, emails, registration numbers, national IDs, and dates
  * while preserving original values.
  */
@@ -91,7 +91,7 @@ export function standardizePhone(phone?: string | null): string | null {
 /**
  * Standardizes Registration Numbers:
  * - Converts to uppercase
- * - Normalizes slashes and hyphens (e.g. UOK/2023/BIT/001 or UOK-2023-BIT-001)
+ * - Normalizes slashes and hyphens (e.g. REG/2023/BIT/001 or REG-2023-BIT-001)
  * - Strips accidental spaces
  */
 export function standardizeRegistrationNumber(regNo?: string | null): string | null {

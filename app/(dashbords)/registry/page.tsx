@@ -56,7 +56,7 @@ export default async function RegistryDashboard() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Registry Operations Console</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            University of Kigali record deduplication, candidate matching verification, and master record consolidation.
+            DATA DEDUPLICATION AND RECORD MATCHING SYSTEM · Candidate matching verification and master record consolidation.
           </p>
         </div>
         <div className="flex flex-wrap gap-2.5">

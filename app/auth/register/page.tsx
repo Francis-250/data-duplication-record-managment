@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { GraduationCap, Building2, School } from "lucide-react";
+import { GraduationCap, Building2, Layers } from "lucide-react";
 
 export default function Register() {
   const router = useRouter();
@@ -95,7 +95,7 @@ export default function Register() {
         <div className="w-full max-w-4xl">
           <div className="mb-10 text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-background text-xs font-medium text-muted-foreground mb-4">
-              <School size={14} className="text-primary" /> University of Kigali
+              <Layers size={14} className="text-primary" /> DATA DEDUPLICATION AND RECORD MATCHING SYSTEM
             </div>
             <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">
               Record Deduplication & Matching System
@@ -166,7 +166,7 @@ export default function Register() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-background text-xs font-medium text-muted-foreground mb-4">
-              <School size={14} className="text-primary" /> University of Kigali
+              <Layers size={14} className="text-primary" /> DATA DEDUPLICATION AND RECORD MATCHING SYSTEM
             </div>
             <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight mb-4">
               {selectedRole === "STUDENT"
@@ -208,7 +208,7 @@ export default function Register() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="name@uok.ac.rw or personal email"
+                  placeholder="name@dedup.system or personal email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -259,7 +259,7 @@ export default function Register() {
                   htmlFor="terms"
                   className="text-xs text-muted-foreground cursor-pointer font-normal"
                 >
-                  I agree to the University of Kigali Data Protection and Registry Regulations
+                  I agree to the Institutional Data Protection and Registry Regulations
                 </Label>
               </div>
 

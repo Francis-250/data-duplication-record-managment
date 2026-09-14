@@ -54,7 +54,7 @@ export default function StudentDuplicateCheckPage() {
       <div className="border-b pb-4">
         <h2 className="text-xl font-bold tracking-tight">Duplicate Record Pre-Check</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Verify if an admission profile, registration number, or national identity is already registered in the University of Kigali database.
+          Verify if an admission profile, registration number, or national identity is already registered in the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM.
         </p>
       </div>
 
@@ -72,7 +72,7 @@ export default function StudentDuplicateCheckPage() {
                 <Label htmlFor="regNo" className="text-xs">Registration Number</Label>
                 <Input
                   id="regNo"
-                  placeholder="e.g. UOK/2024/BIT/042"
+                  placeholder="e.g. REG/2024/BIT/042"
                   value={regNo}
                   onChange={(e) => setRegNo(e.target.value)}
                 />
@@ -152,7 +152,7 @@ export default function StudentDuplicateCheckPage() {
                           </TableCell>
                           <TableCell className="font-medium text-sm">{r.fullName}</TableCell>
                           <TableCell className="text-xs text-muted-foreground">{r.programme || "--"}</TableCell>
-                          <TableCell className="text-xs">{r.campus || "Kigali Campus"}</TableCell>
+                          <TableCell className="text-xs">{r.campus || "Main Campus"}</TableCell>
                           <TableCell>
                             <Badge variant={r.status === "ACTIVE" ? "default" : "secondary"}>
                               {r.status}
@@ -173,7 +173,7 @@ export default function StudentDuplicateCheckPage() {
                   Clean Registration Status - No Duplicates Found
                 </h3>
                 <p className="text-xs text-muted-foreground max-w-md mx-auto mt-1 mb-4">
-                  No existing student records in the University of Kigali registry match these identifiers. You may safely register or submit your official record.
+                  No existing student records in the DATA DEDUPLICATION AND RECORD MATCHING SYSTEM match these identifiers. You may safely register or submit your official record.
                 </p>
                 <Button asChild size="sm">
                   <a href="/student/submit">Proceed to Record Submission</a>

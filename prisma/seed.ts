@@ -14,55 +14,71 @@ const password = process.env.SEED_USER_PASSWORD ?? "University123!";
 
 const users = {
   admin: {
-    id: "seed-admin-uok",
+    id: "seed-admin-01",
     name: "Dr. Diane Karangwa",
-    email: "admin@uok.ac.rw",
+    email: "admin@dedup.system",
     phoneNumber: "+250788000001",
-    username: "admin_uok",
+    username: "admin_system",
     displayUsername: "Dr. Karangwa",
     role: "ADMIN",
   },
   registryStaff: {
-    id: "seed-registry-uok",
+    id: "seed-registry-01",
     name: "Aimable Nkurunziza",
-    email: "registry@uok.ac.rw",
+    email: "registry@dedup.system",
     phoneNumber: "+250788000002",
     username: "registry_staff",
     displayUsername: "A. Nkurunziza",
     role: "REGISTRY_STAFF",
   },
   student: {
-    id: "seed-student-uok",
+    id: "seed-student-01",
     name: "Jean-Paul Habimana",
-    email: "student@uok.ac.rw",
+    email: "student@dedup.system",
     phoneNumber: "+250788000003",
-    username: "jeanpaul_h",
+    username: "student_user",
     displayUsername: "Jean-Paul",
     role: "STUDENT",
   },
 } as const;
 
 async function upsertUser(user: (typeof users)[keyof typeof users]) {
-  return prisma.user.upsert({
-    where: { email: user.email },
-    create: {
+  const existing = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: user.email },
+        { phoneNumber: user.phoneNumber },
+        { id: user.id },
+      ],
+    },
+  });
+
+  if (existing) {
+    return prisma.user.update({
+      where: { id: existing.id },
+      data: {
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        phoneNumberVerified: true,
+        username: user.username,
+        displayUsername: user.displayUsername,
+        role: user.role,
+        emailVerified: true,
+        banned: false,
+        banReason: null,
+        banExpires: null,
+      },
+    });
+  }
+
+  return prisma.user.create({
+    data: {
       ...user,
       emailVerified: true,
       phoneNumberVerified: true,
       banned: false,
       twoFactorEnabled: false,
-    },
-    update: {
-      name: user.name,
-      phoneNumber: user.phoneNumber,
-      phoneNumberVerified: true,
-      username: user.username,
-      displayUsername: user.displayUsername,
-      role: user.role,
-      emailVerified: true,
-      banned: false,
-      banReason: null,
-      banExpires: null,
     },
   });
 }
@@ -99,7 +115,7 @@ async function upsertCredential(userId: string, hashedPassword: string) {
 const studentRecordsData = [
   // Pair 1: Typo in name, different registration format, different phone format (Match)
   {
-    id: "rec-uok-001a",
+    id: "rec-001a",
     recordType: "STUDENT",
     firstName: "Jean-Paul",
     middleName: null,
@@ -109,23 +125,23 @@ const studentRecordsData = [
     dateOfBirth: new Date("1998-05-14"),
     nationalId: "1199880012345012",
     passportNumber: null,
-    registrationNumber: "UOK/2023/BIT/042",
+    registrationNumber: "REG/2023/BIT/042",
     applicantNumber: "APP-2023-0104",
-    email: "jp.habimana@uok.ac.rw",
+    email: "jp.habimana@dedup.system",
     phoneNumber: "+250788123456",
     programme: "Bachelor of Science in Information Technology",
     department: "Information Technology",
     faculty: "Faculty of Computing & Information Technology",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September 2023",
     academicYear: "2023/2024",
-    address: "Gasabo, Kigali",
+    address: "Gasabo, Sector 1",
     recordSource: "Admissions Portal 2023",
     status: "ACTIVE",
-    studentUserId: "seed-student-uok",
+    studentUserId: "seed-student-01",
   },
   {
-    id: "rec-uok-001b",
+    id: "rec-001b",
     recordType: "STUDENT",
     firstName: "Jean Paul",
     middleName: null,
@@ -135,25 +151,25 @@ const studentRecordsData = [
     dateOfBirth: new Date("1998-05-14"),
     nationalId: "1199880012345012",
     passportNumber: null,
-    registrationNumber: "uok-2023-bit-042",
+    registrationNumber: "reg-2023-bit-042",
     applicantNumber: null,
     email: "jeanpaul.h@gmail.com",
     phoneNumber: "0788-123-456",
     programme: "Bachelor of Science in Information Technology",
     department: "Information Technology",
     faculty: "Faculty of Computing & Information Technology",
-    campus: "Musanze Campus",
+    campus: "North Campus",
     intake: "September 2023",
     academicYear: "2023/2024",
-    address: "Kigali, Rwanda",
-    recordSource: "Musanze Campus Legacy Registry",
+    address: "Northern District",
+    recordSource: "North Campus Legacy Registry",
     status: "ACTIVE",
     studentUserId: null,
   },
 
   // Pair 2: Inverted name tokens & different date format (Possible Match / Match)
   {
-    id: "rec-uok-002a",
+    id: "rec-002a",
     recordType: "STUDENT",
     firstName: "Aline",
     middleName: "Mukamana",
@@ -163,23 +179,23 @@ const studentRecordsData = [
     dateOfBirth: new Date("2001-11-20"),
     nationalId: "1200170098765432",
     passportNumber: null,
-    registrationNumber: "UOK/2024/BBA/109",
+    registrationNumber: "REG/2024/BBA/109",
     applicantNumber: "APP-2024-0551",
-    email: "a.uwase@uok.ac.rw",
+    email: "a.uwase@dedup.system",
     phoneNumber: "+250788234567",
     programme: "Bachelor of Business Administration",
     department: "Business Administration",
     faculty: "Faculty of Business Management & Economics",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "March 2024",
     academicYear: "2024/2025",
-    address: "Kicukiro, Kigali",
+    address: "Kicukiro District",
     recordSource: "Main Registry Ingest",
     status: "ACTIVE",
     studentUserId: null,
   },
   {
-    id: "rec-uok-002b",
+    id: "rec-002b",
     recordType: "STUDENT",
     firstName: "Uwase",
     middleName: null,
@@ -189,17 +205,17 @@ const studentRecordsData = [
     dateOfBirth: new Date("2001-11-20"),
     nationalId: "1200170098765432",
     passportNumber: null,
-    registrationNumber: "UOK/2024/BBA/109",
+    registrationNumber: "REG/2024/BBA/109",
     applicantNumber: null,
     email: "aline.uwase2001@yahoo.com",
     phoneNumber: "0788 234 567",
     programme: "Bachelor of Business Administration",
     department: "Business Administration",
     faculty: "Faculty of Business Management & Economics",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "March 2024",
     academicYear: "2024/2025",
-    address: "Kigali",
+    address: "Central District",
     recordSource: "Economics Faculty CSV Import",
     status: "ACTIVE",
     studentUserId: null,
@@ -207,7 +223,7 @@ const studentRecordsData = [
 
   // Pair 3: Missing National ID in one record, slight spelling difference (Possible Match)
   {
-    id: "rec-uok-003a",
+    id: "rec-003a",
     recordType: "STUDENT",
     firstName: "Eric",
     middleName: null,
@@ -217,23 +233,23 @@ const studentRecordsData = [
     dateOfBirth: new Date("1999-03-10"),
     nationalId: "1199980034567890",
     passportNumber: null,
-    registrationNumber: "UOK/2022/BCS/088",
+    registrationNumber: "REG/2022/BCS/088",
     applicantNumber: "APP-2022-0312",
-    email: "e.mugisha@uok.ac.rw",
+    email: "e.mugisha@dedup.system",
     phoneNumber: "+250788345678",
     programme: "Bachelor of Science in Computer Science",
     department: "Computer Science",
     faculty: "Faculty of Computing & Information Technology",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September 2022",
     academicYear: "2022/2023",
-    address: "Nyarugenge, Kigali",
+    address: "Nyarugenge District",
     recordSource: "Admissions 2022 Export",
     status: "ACTIVE",
     studentUserId: null,
   },
   {
-    id: "rec-uok-003b",
+    id: "rec-003b",
     recordType: "STUDENT",
     firstName: "Erik",
     middleName: null,
@@ -243,17 +259,17 @@ const studentRecordsData = [
     dateOfBirth: new Date("1999-03-10"),
     nationalId: null, // missing info
     passportNumber: null,
-    registrationNumber: "UOK/2022/BCS/088",
+    registrationNumber: "REG/2022/BCS/088",
     applicantNumber: null,
     email: "erikm99@gmail.com",
     phoneNumber: "+250788345678",
     programme: "Bachelor of Science in Computer Science",
     department: "Computer Science",
     faculty: "Faculty of Computing & Information Technology",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September 2022",
     academicYear: "2022/2023",
-    address: "Kigali",
+    address: "Western District",
     recordSource: "External Exam Board Sync",
     status: "ACTIVE",
     studentUserId: null,
@@ -261,7 +277,7 @@ const studentRecordsData = [
 
   // Pair 4: Law Faculty Student with missing Reg Number (Match via National ID)
   {
-    id: "rec-uok-004a",
+    id: "rec-004a",
     recordType: "STUDENT",
     firstName: "Clarisse",
     middleName: null,
@@ -271,23 +287,23 @@ const studentRecordsData = [
     dateOfBirth: new Date("2000-08-25"),
     nationalId: "1200070045678901",
     passportNumber: null,
-    registrationNumber: "UOK/2023/LLB/015",
+    registrationNumber: "REG/2023/LLB/015",
     applicantNumber: "APP-2023-0870",
-    email: "c.keza@uok.ac.rw",
+    email: "c.keza@dedup.system",
     phoneNumber: "+250788456789",
     programme: "Bachelor of Laws",
     department: "Law",
     faculty: "Faculty of Law",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September 2023",
     academicYear: "2023/2024",
-    address: "Gasabo, Kigali",
+    address: "Eastern District",
     recordSource: "Law Faculty Database",
     status: "ACTIVE",
     studentUserId: null,
   },
   {
-    id: "rec-uok-004b",
+    id: "rec-004b",
     recordType: "STUDENT",
     firstName: "Kezah",
     middleName: "Marie",
@@ -304,10 +320,10 @@ const studentRecordsData = [
     programme: "Bachelor of Laws",
     department: "Law",
     faculty: "Faculty of Law",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September 2023",
     academicYear: "2023/2024",
-    address: "Kigali",
+    address: "Southern District",
     recordSource: "Admissions Intake Sheet",
     status: "ACTIVE",
     studentUserId: null,
@@ -315,7 +331,7 @@ const studentRecordsData = [
 
   // Independent distinct students (Non-matches)
   {
-    id: "rec-uok-005",
+    id: "rec-005",
     recordType: "STUDENT",
     firstName: "Patrick",
     middleName: "Kanimba",
@@ -325,23 +341,23 @@ const studentRecordsData = [
     dateOfBirth: new Date("2002-01-18"),
     nationalId: "1200280067890123",
     passportNumber: null,
-    registrationNumber: "UOK/2024/BIT/301",
+    registrationNumber: "REG/2024/BIT/301",
     applicantNumber: "APP-2024-1102",
-    email: "p.bizimana@uok.ac.rw",
+    email: "p.bizimana@dedup.system",
     phoneNumber: "+250788567890",
     programme: "Bachelor of Science in Information Technology",
     department: "Information Technology",
     faculty: "Faculty of Computing & Information Technology",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September 2024",
     academicYear: "2024/2025",
-    address: "Huye, Rwanda",
+    address: "Southern Province",
     recordSource: "Admissions 2024",
     status: "ACTIVE",
     studentUserId: null,
   },
   {
-    id: "rec-uok-006",
+    id: "rec-006",
     recordType: "STUDENT",
     firstName: "Sandrine",
     middleName: null,
@@ -351,23 +367,23 @@ const studentRecordsData = [
     dateOfBirth: new Date("2001-04-12"),
     nationalId: "1200170078901234",
     passportNumber: null,
-    registrationNumber: "UOK/2023/BBA/412",
+    registrationNumber: "REG/2023/BBA/412",
     applicantNumber: "APP-2023-1490",
-    email: "s.ingabire@uok.ac.rw",
+    email: "s.ingabire@dedup.system",
     phoneNumber: "+250788678901",
     programme: "Bachelor of Business Administration",
     department: "Accounting & Finance",
     faculty: "Faculty of Business Management & Economics",
-    campus: "Musanze Campus",
+    campus: "North Campus",
     intake: "March 2023",
     academicYear: "2023/2024",
-    address: "Musanze, Northern Province",
-    recordSource: "Musanze Campus Registry",
+    address: "Northern Province",
+    recordSource: "North Campus Registry",
     status: "ACTIVE",
     studentUserId: null,
   },
   {
-    id: "rec-uok-007",
+    id: "rec-007",
     recordType: "STUDENT",
     firstName: "David",
     middleName: null,
@@ -377,17 +393,17 @@ const studentRecordsData = [
     dateOfBirth: new Date("1997-09-30"),
     nationalId: "1199780089012345",
     passportNumber: null,
-    registrationNumber: "UOK/2023/MIT/009",
+    registrationNumber: "REG/2023/MIT/009",
     applicantNumber: "APP-2023-0012",
-    email: "d.nsengiyumva@uok.ac.rw",
+    email: "d.nsengiyumva@dedup.system",
     phoneNumber: "+250788789012",
     programme: "Master of Science in Information Technology",
     department: "Postgraduate Studies",
     faculty: "Faculty of Computing & Information Technology",
-    campus: "Kigali Campus (Kacyiru)",
+    campus: "Main Campus",
     intake: "September 2023",
     academicYear: "2023/2024",
-    address: "Kicukiro, Kigali",
+    address: "Capital District",
     recordSource: "Postgraduate Registry",
     status: "ACTIVE",
     studentUserId: null,
@@ -395,22 +411,18 @@ const studentRecordsData = [
 ];
 
 async function main() {
-  console.log("Seeding University of Kigali Record Deduplication System...");
+  console.log("Seeding DATA DEDUPLICATION AND RECORD MATCHING SYSTEM...");
 
   const hashedPassword = await hashPassword(password);
 
   // 1. Seed Users with required role values: ADMIN, REGISTRY_STAFF, STUDENT
-  const [adminUser, registryUser, studentUser] = await Promise.all([
-    upsertUser(users.admin),
-    upsertUser(users.registryStaff),
-    upsertUser(users.student),
-  ]);
+  const adminUser = await upsertUser(users.admin);
+  const registryUser = await upsertUser(users.registryStaff);
+  const studentUser = await upsertUser(users.student);
 
-  await Promise.all([
-    upsertCredential(adminUser.id, hashedPassword),
-    upsertCredential(registryUser.id, hashedPassword),
-    upsertCredential(studentUser.id, hashedPassword),
-  ]);
+  await upsertCredential(adminUser.id, hashedPassword);
+  await upsertCredential(registryUser.id, hashedPassword);
+  await upsertCredential(studentUser.id, hashedPassword);
 
   console.log("Seeded User Accounts:");
   console.table([
@@ -443,12 +455,12 @@ async function main() {
     },
     {
       key: "institution_name",
-      value: "University of Kigali",
+      value: "DATA DEDUPLICATION AND RECORD MATCHING SYSTEM",
       description: "Institution name",
     },
     {
       key: "primary_campus",
-      value: "Kigali Campus (Kacyiru)",
+      value: "Main Campus",
       description: "Primary main campus",
     },
   ];
@@ -463,11 +475,11 @@ async function main() {
 
   // 3. Seed Dataset Import Entry
   const datasetImport = await prisma.datasetImport.upsert({
-    where: { id: "seed-dataset-import-uok" },
+    where: { id: "seed-dataset-import-01" },
     create: {
-      id: "seed-dataset-import-uok",
-      originalFileName: "UoK_Student_Admissions_Cohort_2024.csv",
-      storedFileName: "uok-cohort-2024-verified.csv",
+      id: "seed-dataset-import-01",
+      originalFileName: "Student_Admissions_Cohort_2024.csv",
+      storedFileName: "cohort-2024-verified.csv",
       fileSize: 48120,
       mimeType: "text/csv",
       uploadedById: registryUser.id,
@@ -538,7 +550,7 @@ async function main() {
       startedById: registryUser.id,
       status: MatchRunStatus.COMPLETED,
       algorithm: "Hybrid Fellegi-Sunter & Token Similarity",
-      modelVersion: "v2.4-UOK-ML",
+      modelVersion: "v2.4-DEDUP-ML",
       matchThreshold: 0.8,
       possibleThreshold: 0.52,
       recordsProcessed: createdRecords.length,
@@ -555,8 +567,8 @@ async function main() {
   });
 
   // Evaluate and seed candidate pair 1: Jean-Paul Habimana
-  const rec1a = createdRecords.find((r) => r.id === "rec-uok-001a")!;
-  const rec1b = createdRecords.find((r) => r.id === "rec-uok-001b")!;
+  const rec1a = createdRecords.find((r) => r.id === "rec-001a")!;
+  const rec1b = createdRecords.find((r) => r.id === "rec-001b")!;
   const eval1 = compareRecordPair(rec1a, rec1b);
 
   const cand1 = await prisma.matchCandidate.upsert({
@@ -581,7 +593,7 @@ async function main() {
       reviewedById: registryUser.id,
       reviewedAt: new Date(),
       reviewNote:
-        "Confirmed: Student registered on main admissions and local Musanze registry with slight spelling variation.",
+        "Confirmed: Student registered on main admissions and North Campus registry with slight spelling variation.",
       fieldComparisons: {
         create: eval1.fieldComparisons.map((fc) => ({
           fieldName: fc.fieldName,
@@ -602,8 +614,8 @@ async function main() {
   });
 
   // Evaluate and seed candidate pair 2: Aline Uwase Mukamana (Pre-merged to demonstrate merge history!)
-  const rec2a = createdRecords.find((r) => r.id === "rec-uok-002a")!;
-  const rec2b = createdRecords.find((r) => r.id === "rec-uok-002b")!;
+  const rec2a = createdRecords.find((r) => r.id === "rec-002a")!;
+  const rec2b = createdRecords.find((r) => r.id === "rec-002b")!;
   const eval2 = compareRecordPair(rec2a, rec2b);
 
   const cand2 = await prisma.matchCandidate.upsert({
@@ -684,8 +696,8 @@ async function main() {
   });
 
   // Evaluate candidate pair 3: Eric Mugisha (Pending Review)
-  const rec3a = createdRecords.find((r) => r.id === "rec-uok-003a")!;
-  const rec3b = createdRecords.find((r) => r.id === "rec-uok-003b")!;
+  const rec3a = createdRecords.find((r) => r.id === "rec-003a")!;
+  const rec3b = createdRecords.find((r) => r.id === "rec-003b")!;
   const eval3 = compareRecordPair(rec3a, rec3b);
 
   await prisma.matchCandidate.upsert({
@@ -724,8 +736,8 @@ async function main() {
   });
 
   // Evaluate candidate pair 4: Clarisse Keza (Pending Review)
-  const rec4a = createdRecords.find((r) => r.id === "rec-uok-004a")!;
-  const rec4b = createdRecords.find((r) => r.id === "rec-uok-004b")!;
+  const rec4a = createdRecords.find((r) => r.id === "rec-004a")!;
+  const rec4b = createdRecords.find((r) => r.id === "rec-004b")!;
   const eval4 = compareRecordPair(rec4a, rec4b);
 
   await prisma.matchCandidate.upsert({
@@ -778,7 +790,7 @@ async function main() {
       entityType: "DatasetImport",
       entityId: datasetImport.id,
       description:
-        "Registry staff uploaded cohort CSV 'UoK_Student_Admissions_Cohort_2024.csv'.",
+        "Registry staff uploaded cohort CSV 'Student_Admissions_Cohort_2024.csv'.",
     },
     {
       actorUserId: registryUser.id,

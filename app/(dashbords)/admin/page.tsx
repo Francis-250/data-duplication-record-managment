@@ -30,7 +30,7 @@ export default async function AdminDashboardPage() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Institutional Deduplication Overview</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            University of Kigali · Comprehensive record analysis, duplicate detection reports, and system monitoring.
+            DATA DEDUPLICATION AND RECORD MATCHING SYSTEM · Comprehensive record analysis, duplicate detection reports, and system monitoring.
           </p>
         </div>
         <div className="flex items-center gap-2">

@@ -1,12 +1,12 @@
-# University of Kigali (UoK) — Data Deduplication & Record Matching System
+# DATA DEDUPLICATION AND RECORD MATCHING SYSTEM
 
-An enterprise-grade, AI-assisted institutional record deduplication, entity resolution, and student identity matching platform engineered for the **University of Kigali (UoK)**. The system identifies, standardizes, compares, and consolidates duplicate and conflicting student records across admissions, registrar datasets, faculty rosters, and legacy databases.
+An enterprise-grade, AI-assisted institutional record deduplication, entity resolution, and student identity matching platform. The system identifies, standardizes, compares, and consolidates duplicate and conflicting student records across admissions, registrar datasets, faculty rosters, and legacy databases.
 
 ---
 
 ## 🏛️ System Purpose & Real-World Challenges Solved
 
-Student records accumulated across disparate intake periods, faculties (Kigali and Musanze campuses), and legacy spreadsheets frequently contain real-world discrepancies:
+Student records accumulated across disparate intake periods, departments (Main and North campuses), and legacy spreadsheets frequently contain real-world discrepancies:
 
 - **Name Spelling & Token Permutations**: Swapped given and family names (e.g., Kinyarwanda naming customs where surname precedes European given name: `Habimana Jean Paul` vs. `Jean-Paul Habimana`).
 - **Missing Middle Names**: Inconsistent inclusion of middle or baptismal names (`Uwase Marie Claire` vs. `Marie Uwase`).
@@ -15,7 +15,7 @@ Student records accumulated across disparate intake periods, faculties (Kigali a
 - **Date of Birth Variances**: Inconsistent formats (`DD/MM/YYYY`, `MM/DD/YYYY`, and ISO `YYYY-MM-DD`).
 - **Registration Number Variations**: Discrepancies in separators (`2023/BIT/042` vs. `2023-BIT-042` vs. `2023.bit.42`).
 - **Rwandan National ID Slips**: 16-digit National Identification numbers entered with spaces or single-digit typographical slips.
-- **Multi-System Imports**: Data ingested from legacy spreadsheets, admissions portals, and faculty rosters.
+- **Multi-System Imports**: Data ingested from legacy spreadsheets, admissions portals, and department rosters.
 
 ---
 
@@ -125,15 +125,15 @@ The database is pre-seeded with dedicated demonstration accounts for testing eve
 
 | Role | Email | Password | Default Portal |
 | :--- | :--- | :--- | :--- |
-| **System Administrator** | `admin@uok.ac.rw` | `University123!` | `/admin` |
-| **Registry Staff** | `registry@uok.ac.rw` | `University123!` | `/registry` |
-| **Enrolled Student** | `student@uok.ac.rw` | `University123!` | `/student` |
+| **System Administrator** | `admin@dedup.system` | `University123!` | `/admin` |
+| **Registry Staff** | `registry@dedup.system` | `University123!` | `/registry` |
+| **Enrolled Student** | `student@dedup.system` | `University123!` | `/student` |
 
 ---
 
 ### 1. Student Portal Flow (`STUDENT`)
 
-**Login at [`/auth/login`](http://localhost:3000/auth/login) with `student@uok.ac.rw` / `University123!`**
+**Login at [`/auth/login`](http://localhost:3000/auth/login) with `student@dedup.system` / `University123!`**
 
 1. **Dashboard Overview (`/student`)**:
    - Displays student identity banner, registration status (`ACTIVE`), enrolled programme, campus, and student ID.
@@ -145,21 +145,21 @@ The database is pre-seeded with dedicated demonstration accounts for testing eve
    - Enter name, phone, registration number, or National ID.
    - System standardizes input and checks against active database records, alerting if a duplicate profile already exists.
 4. **Institutional Directory Search (`/student/search`)**:
-   - Search authorized public directory records across Kigali and Musanze campuses.
+   - Search authorized public directory records across campuses.
 
 ---
 
 ### 2. Registry Staff Portal Flow (`REGISTRY_STAFF`)
 
-**Login at [`/auth/login`](http://localhost:3000/auth/login) with `registry@uok.ac.rw` / `University123!`**
+**Login at [`/auth/login`](http://localhost:3000/auth/login) with `registry@dedup.system` / `University123!`**
 
 1. **Operations Dashboard (`/registry`)**:
    - Displays real-time operational statistics: Total Records, Active Students, Potential Duplicates Flagged, and Resolved Merges.
 2. **Institutional Records Catalog (`/registry/records`)**:
-   - Search and filter student records by campus (Kigali Campus / Musanze Campus), enrollment status (`ACTIVE`, `MERGED`, `PENDING_REVIEW`), and programme.
+   - Search and filter student records by campus (Main Campus / North Campus), enrollment status (`ACTIVE`, `MERGED`, `PENDING_REVIEW`), and programme.
 3. **CSV Dataset Ingestion (`/registry/import`)**:
-   - Download a sample CSV template pre-formatted with official university headers.
-   - Upload CSV batches from admissions or faculties.
+   - Download a sample CSV template pre-formatted with official headers.
+   - Upload CSV batches from admissions or departments.
    - Real-time pre-validation checks for missing fields, invalid phone formats, and **in-file duplicates** (e.g. duplicate National IDs or Reg Numbers within the same file).
    - Click **"Commit Valid Records"** to ingest data into the database with automatic standardization.
 4. **Deduplication Engine (`/registry/deduplication`)**:
@@ -186,7 +186,7 @@ The database is pre-seeded with dedicated demonstration accounts for testing eve
 
 ### 3. Administrator Console Flow (`ADMIN`)
 
-**Login at [`/auth/login`](http://localhost:3000/auth/login) with `admin@uok.ac.rw` / `University123!`**
+**Login at [`/auth/login`](http://localhost:3000/auth/login) with `admin@dedup.system` / `University123!`**
 
 1. **Executive KPI Dashboard (`/admin`)**:
    - High-level institutional hygiene metrics: Total Records, Deduplication Rate, Pending Match Queue, Active Imports, and Campus Distribution charts.
@@ -247,7 +247,7 @@ pnpm db:push
 # Generate Prisma Client
 pnpm prisma generate
 
-# Populate University of Kigali demonstration data & accounts
+# Populate demonstration data & accounts
 pnpm db:seed
 ```
 
@@ -294,11 +294,11 @@ data-duplication/
 │   │   └── student/                 # Student Portal (Dashboard, Submit, Check Duplicate, Search)
 │   ├── api/auth/                    # Better Auth API endpoints
 │   ├── auth/                        # Authentication Pages (Login, Register, OTP, Password Reset)
-│   ├── icon.svg                     # Primary SVG Favicon (Institutional Crest & Match Badge)
+│   ├── icon.svg                     # Primary SVG Favicon (Dual-record linkage iconography)
 │   ├── favicon.ico                  # Multi-resolution ICO (48x48, 32x32, 16x16)
 │   ├── apple-icon.png               # High-res 180x180 Apple Touch Icon
-│   ├── layout.tsx                   # Root Layout & UoK Metadata Configuration
-│   └── page.tsx                     # Institutional Landing Page
+│   ├── layout.tsx                   # Root Layout & Metadata Configuration
+│   └── page.tsx                     # Landing Page
 ├── components/                      # UI Components
 │   ├── layout/                      # Sidebars (Admin, Registry, Student) and Header
 │   ├── registry-side-by-side-review.tsx # Side-by-side comparison & AI analysis card
@@ -324,7 +324,7 @@ data-duplication/
 │       ├── csv-importer.ts          # CSV parser, column alias mapping, in-file duplicate detection
 │       └── audit.ts                 # Audit logging helper
 ├── prisma/
-│   ├── schema.prisma                # Clean Prisma schema (Better Auth + UoK Deduplication models)
+│   ├── schema.prisma                # Clean Prisma schema (Better Auth + Deduplication models)
 │   └── seed.ts                      # Demonstration seed data with real-world discrepancies
 ├── proxy.ts                         # Next.js 16 Root Proxy (Session handling & role guards)
 ├── scripts/
@@ -345,4 +345,4 @@ data-duplication/
 
 ## 📄 License
 
-This system is developed for the **University of Kigali (UoK)**. Internal academic and administrative use only.
+DATA DEDUPLICATION AND RECORD MATCHING SYSTEM. All rights reserved.
