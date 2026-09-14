@@ -1,11 +1,21 @@
-import { AdminPageHeader } from "@/components/admin-page-header";
-import { AdminUsersClient } from "@/components/admin-users-client";
+import { getAdminUsers } from "@/actions/admin/operations";
 import { requireAdminPage } from "@/lib/admin-auth";
-import { formatAdminDate } from "@/lib/admin";
-import prisma from "@/lib/prisma";
+import { AdminUsersClient } from "@/components/admin-users-client";
 
 export default async function AdminUsersPage() {
   await requireAdminPage();
-  const users = await prisma.user.findMany({ orderBy: { createdAt: "desc" } });
-  return <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10"><AdminPageHeader eyebrow="Access control" title="Users" description="Manage roles, account status, and access." /><AdminUsersClient users={users.map((user) => ({ id: user.id, name: user.name, email: user.email, role: user.role ?? "patient", banned: user.banned ?? false, verified: user.emailVerified, createdAt: formatAdminDate(user.createdAt) }))} /></div>;
+  const data = await getAdminUsers({ pageSize: 100 });
+
+  return (
+    <div className="space-y-6">
+      <div className="border-b pb-4">
+        <h2 className="text-xl font-bold tracking-tight">System User Management & Access Control</h2>
+        <p className="text-xs text-muted-foreground mt-1">
+          Assign institutional roles (STUDENT, REGISTRY_STAFF, ADMIN), monitor email verification status, and manage account suspension.
+        </p>
+      </div>
+
+      <AdminUsersClient initialUsers={data.items} />
+    </div>
+  );
 }

@@ -3,20 +3,30 @@ import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
 
 const statement = {
   ...defaultStatements,
-  patientProfile: ["view", "update", "delete", "create"],
+  studentRecord: ["view", "update", "create"],
+  institutionalRecord: ["view", "update", "delete", "create"],
+  datasetImport: ["view", "create"],
+  deduplication: ["run", "review", "merge"],
 } as const;
 
 export const ac = createAccessControl(statement);
 
-export const patient = ac.newRole({
-  patientProfile: ["view", "update"],
+export const student = ac.newRole({
+  studentRecord: ["view", "create", "update"],
 });
 
-export const doctor = ac.newRole({
-  patientProfile: ["view"],
+export const registry_staff = ac.newRole({
+  studentRecord: ["view", "create", "update"],
+  institutionalRecord: ["view", "update", "create"],
+  datasetImport: ["view", "create"],
+  deduplication: ["run", "review", "merge"],
 });
 
 export const admin = ac.newRole({
-  patientProfile: ["view", "update", "delete", "create"],
+  studentRecord: ["view", "update", "create"],
+  institutionalRecord: ["view", "update", "delete", "create"],
+  datasetImport: ["view", "create"],
+  deduplication: ["run", "review", "merge"],
   ...adminAc.statements,
 });
+

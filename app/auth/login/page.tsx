@@ -80,17 +80,17 @@ export default function LoginForm() {
 
         {/* Left */}
         <div>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">
-            StrokeCheck
-          </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-background text-xs font-medium text-muted-foreground mb-4">
+            University of Kigali
+          </div>
           <h1 className="text-4xl font-semibold tracking-tight leading-tight mb-4">
-            Early detection <br /> saves lives
+            Data Deduplication & Record Matching
           </h1>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-            Sign in to access your AI-powered stroke symptom assessment dashboard and track your health history.
+            Sign in to access your portal: submit student records, import institutional datasets, run deduplication algorithms, and review matching candidates.
           </p>
           <p className="mt-10 text-sm text-muted-foreground">
-            No account?{" "}
+            Need an account?{" "}
             <Link href="/auth/register" className="font-medium text-foreground underline underline-offset-4">
               Register here
             </Link>

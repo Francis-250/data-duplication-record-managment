@@ -18,13 +18,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const home = roleHome(session.user.role);
+  const userRole = session.user.role?.toUpperCase();
+  const home = roleHome(userRole);
 
   if (authEntry && isPageRequest) {
     return NextResponse.redirect(new URL(home, request.url));
   }
 
-  if (requiredRole && session.user.role?.toLowerCase() !== requiredRole) {
+  if (requiredRole && userRole !== requiredRole && userRole !== "ADMIN") {
     return NextResponse.redirect(new URL(home, request.url));
   }
 
@@ -33,8 +34,8 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/patient/:path*",
-    "/doctor/:path*",
+    "/student/:path*",
+    "/registry/:path*",
     "/admin/:path*",
     "/auth/login",
     "/auth/register",

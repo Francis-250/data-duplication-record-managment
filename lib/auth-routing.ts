@@ -1,19 +1,20 @@
 export function roleHome(role?: string | null) {
-  switch (role?.toLowerCase()) {
-    case "admin":
+  switch (role?.toUpperCase()) {
+    case "ADMIN":
       return "/admin";
-    case "doctor":
-      return "/doctor";
-    case "patient":
-      return "/patient";
+    case "REGISTRY_STAFF":
+      return "/registry";
+    case "STUDENT":
+      return "/student";
     default:
       return "/";
   }
 }
 
-export function roleForPath(pathname: string) {
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) return "admin";
-  if (pathname === "/doctor" || pathname.startsWith("/doctor/")) return "doctor";
-  if (pathname === "/patient" || pathname.startsWith("/patient/")) return "patient";
+export function roleForPath(pathname: string): "ADMIN" | "REGISTRY_STAFF" | "STUDENT" | null {
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return "ADMIN";
+  if (pathname === "/registry" || pathname.startsWith("/registry/")) return "REGISTRY_STAFF";
+  if (pathname === "/student" || pathname.startsWith("/student/")) return "STUDENT";
   return null;
 }
+

@@ -3,7 +3,7 @@ import { getServerSession } from "@/hooks/get-server-session";
 import { roleHome } from "@/lib/auth-routing";
 
 export function isAdminRole(role?: string | null) {
-  return role?.toLowerCase() === "admin";
+  return role?.toUpperCase() === "ADMIN";
 }
 
 export async function requireAdminPage() {

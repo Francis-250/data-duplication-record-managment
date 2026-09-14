@@ -6,38 +6,31 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id                     String      @id
-  name                   String
-  email                  String
-  emailVerified          Boolean     @default(false)
-  image                  String?
-  createdAt              DateTime    @default(now())
-  updatedAt              DateTime    @updatedAt
-  role                   String?
-  banned                 Boolean?    @default(false)
-  banReason              String?
-  banExpires             DateTime?
-  phoneNumber            String?
-  phoneNumberVerified    Boolean?
-  username               String?
-  displayUsername        String?
-  twoFactorEnabled       Boolean?    @default(false)
-  aiDailyAssessmentLimit Int?
-  sessions               Session[]
-  accounts               Account[]
-  twofactors             TwoFactor[]
+// -----------------------------------------------------------------------------
+// Better Auth Core Models
+// Strictly preserving core models as required: User, Session, Account, Verification, TwoFactor
+// -----------------------------------------------------------------------------
 
-  patientProfile     PatientProfile?
-  doctorProfile      DoctorProfile?
-  assessments        Assessment[]
-  notifications      Notification[]
-  auditLogs          AuditLog[]
-  aiUsageLogs        AiUsageLog[]
-  patientAssignments PatientDoctorAssignment[] @relation("PatientAssignments")
-  createdAssignments PatientDoctorAssignment[] @relation("AssignmentActor")
-  doctorFeedback     DoctorFeedback[]          @relation("PatientFeedback")
-  reviewedFeedback   DoctorFeedback[]          @relation("FeedbackReviewer")
+model User {
+  id                  String      @id
+  name                String
+  email               String
+  emailVerified       Boolean     @default(false)
+  image               String?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  role                String?
+  banned              Boolean?    @default(false)
+  banReason           String?
+  banExpires          DateTime?
+  phoneNumber         String?
+  phoneNumberVerified Boolean?
+  username            String?
+  displayUsername     String?
+  twoFactorEnabled    Boolean?    @default(false)
+  sessions            Session[]
+  accounts            Account[]
+  twofactors          TwoFactor[]
 
   @@unique([email])
   @@unique([phoneNumber])
@@ -107,326 +100,9 @@ model TwoFactor {
   @@map("twoFactor")
 }
 
-enum UserRole {
-  PATIENT
-  DOCTOR
-  ADMIN
-}
-
-enum RiskLevel {
-  LOW
-  MEDIUM
-  HIGH
-}
-
-enum NotificationStatus {
-  UNREAD
-  READ
-}
-
-enum NotificationType {
-  ASSESSMENT_RESULT
-  DOCTOR_ALERT
-  DOCTOR_COMMENT
-  DOCTOR_ASSIGNED
-  HIGH_RISK_ALERT
-  SYSTEM
-}
-
-enum AuditAction {
-  USER_REGISTERED
-  USER_LOGIN
-  USER_LOGOUT
-  USER_BANNED
-  USER_UNBANNED
-  PASSWORD_RESET
-  EMAIL_VERIFIED
-  TWO_FACTOR_ENABLED
-  TWO_FACTOR_DISABLED
-  ASSESSMENT_CREATED
-  ASSESSMENT_VIEWED
-  ASSESSMENT_DELETED
-  DOCTOR_COMMENT_ADDED
-  DOCTOR_COMMENT_DELETED
-  DOCTOR_VERIFIED
-  DOCTOR_UNVERIFIED
-  ADMIN_USER_DELETED
-  ADMIN_ROLE_CHANGED
-  ADMIN_DATASET_UPLOADED
-  AI_ASSESSMENT_TRIGGERED
-  AI_CLASSIFICATION_TRIGGERED
-  NOTIFICATION_SENT
-  NOTIFICATION_READ
-  ASSESSMENT_ASSIGNED
-  DOCTOR_FEEDBACK_ADDED
-  DOCTOR_FEEDBACK_REVIEWED
-  AI_LIMIT_UPDATED
-}
-
-enum AssignmentSource {
-  PATIENT
-  ADMIN
-}
-
-enum DoctorFeedbackStatus {
-  PENDING
-  RESOLVED
-}
-
-enum AiModel {
-  LLAMA_3_3_70B
-  LLAMA_3_1_8B
-}
-
-enum AiCallType {
-  STREAM_ASSESSMENT
-  RISK_CLASSIFICATION
-}
-
-enum AiCallStatus {
-  SUCCESS
-  FAILED
-  TIMEOUT
-}
-
-enum AssessmentStatus {
-  PENDING
-  COMPLETED
-  REVIEWED
-  FLAGGED
-}
-
-model PatientProfile {
-  id                 String   @id @default(cuid())
-  userId             String   @unique
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  age                Int?
-  gender             String?
-  bloodType          String?
-  allergies          String?
-  existingConditions String?
-  smokingStatus      Boolean? @default(false)
-  diabetic           Boolean? @default(false)
-  hypertension       Boolean? @default(false)
-  heartDisease       Boolean? @default(false)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-
-  @@map("patient_profile")
-}
-
-model DoctorProfile {
-  id                      String                    @id @default(cuid())
-  userId                  String                    @unique
-  user                    User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialization          String?
-  hospitalName            String?
-  licenseNumber           String?                   @unique
-  isVerified              Boolean                   @default(false)
-  verifiedAt              DateTime?
-  isApprovedByAdmin       Boolean                   @default(false)
-  approvedByAdminAt       DateTime?
-  approvalRejectedAt      DateTime?
-  approvalRejectionReason String?
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
-  comments                DoctorComment[]
-  assignments             PatientDoctorAssignment[]
-  feedback                DoctorFeedback[]
-
-  @@map("doctor_profile")
-}
-
-model Assessment {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  symptoms     Json
-  symptomsText String? @db.Text
-
-  riskLevel         RiskLevel
-  confidenceScore   Float
-  detectedSymptoms  Json
-  fastScore         Int       @default(0)
-  requiresEmergency Boolean   @default(false)
-  aiResponse        String    @db.Text
-  recommendation    String    @db.Text
-
-  status           AssessmentStatus @default(COMPLETED)
-  reviewedByDoctor Boolean          @default(false)
-  reviewedAt       DateTime?
-
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  doctorComments   DoctorComment[]
-  notifications    Notification[]
-  aiUsageLogs      AiUsageLog[]
-  doctorAssignment PatientDoctorAssignment?
-  doctorFeedback   DoctorFeedback[]
-
-  @@index([userId])
-  @@index([riskLevel])
-  @@index([status])
-  @@index([createdAt])
-  @@map("assessment")
-}
-
-model PatientDoctorAssignment {
-  id               String           @id @default(cuid())
-  assessmentId     String           @unique
-  assessment       Assessment       @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  patientUserId    String
-  patient          User             @relation("PatientAssignments", fields: [patientUserId], references: [id], onDelete: Cascade)
-  doctorProfileId  String
-  doctorProfile    DoctorProfile    @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
-  assignedByUserId String
-  assignedBy       User             @relation("AssignmentActor", fields: [assignedByUserId], references: [id], onDelete: Restrict)
-  source           AssignmentSource
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-
-  @@index([patientUserId])
-  @@index([doctorProfileId])
-  @@map("patient_doctor_assignment")
-}
-
-model DoctorFeedback {
-  id               String               @id @default(cuid())
-  assessmentId     String
-  assessment       Assessment           @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  patientUserId    String
-  patient          User                 @relation("PatientFeedback", fields: [patientUserId], references: [id], onDelete: Cascade)
-  doctorProfileId  String
-  doctorProfile    DoctorProfile        @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
-  comment          String               @db.Text
-  status           DoctorFeedbackStatus @default(PENDING)
-  adminNote        String?              @db.Text
-  reviewedByUserId String?
-  reviewedBy       User?                @relation("FeedbackReviewer", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
-  reviewedAt       DateTime?
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
-
-  @@unique([assessmentId, patientUserId, doctorProfileId])
-  @@index([doctorProfileId])
-  @@index([status])
-  @@map("doctor_feedback")
-}
-
-model DoctorComment {
-  id              String        @id @default(cuid())
-  assessmentId    String
-  assessment      Assessment    @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  doctorProfileId String
-  doctorProfile   DoctorProfile @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
-  comment         String        @db.Text
-  isUrgent        Boolean       @default(false)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-
-  @@index([assessmentId])
-  @@index([doctorProfileId])
-  @@map("doctor_comment")
-}
-
-model Notification {
-  id           String             @id @default(cuid())
-  userId       String
-  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  assessmentId String?
-  assessment   Assessment?        @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
-  type         NotificationType
-  title        String
-  message      String             @db.Text
-  status       NotificationStatus @default(UNREAD)
-  readAt       DateTime?
-  createdAt    DateTime           @default(now())
-
-  @@index([userId])
-  @@index([status])
-  @@index([createdAt])
-  @@map("notification")
-}
-
-model AuditLog {
-  id          String      @id @default(cuid())
-  userId      String?
-  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  action      AuditAction
-  entity      String?
-  entityId    String?
-  description String?     @db.Text
-  metadata    Json?
-  ipAddress   String?
-  userAgent   String?
-  createdAt   DateTime    @default(now())
-
-  @@index([userId])
-  @@index([action])
-  @@index([entity, entityId])
-  @@index([createdAt])
-  @@map("audit_log")
-}
-
-model AiUsageLog {
-  id           String      @id @default(cuid())
-  userId       String?
-  user         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  assessmentId String?
-  assessment   Assessment? @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
-
-  model    AiModel
-  callType AiCallType
-  status   AiCallStatus
-
-  promptTokens     Int @default(0)
-  completionTokens Int @default(0)
-  totalTokens      Int @default(0)
-
-  latencyMs    Int     @default(0)
-  errorMessage String? @db.Text
-
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([assessmentId])
-  @@index([model])
-  @@index([callType])
-  @@index([status])
-  @@index([createdAt])
-  @@map("ai_usage_log")
-}
-
-model AiDataset {
-  id          String   @id @default(cuid())
-  name        String
-  description String?  @db.Text
-  fileName    String
-  fileUrl     String
-  recordCount Int      @default(0)
-  isActive    Boolean  @default(true)
-  uploadedBy  String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("ai_dataset")
-}
-
-model SystemSetting {
-  id          String   @id @default(cuid())
-  key         String   @unique
-  value       String   @db.Text
-  description String?
-  updatedBy   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("system_setting")
-}
+// -----------------------------------------------------------------------------
+// University of Kigali — Data Deduplication & Record Matching Enums
+// -----------------------------------------------------------------------------
 
 enum InstitutionalRecordType {
   STUDENT
@@ -472,6 +148,10 @@ enum MatchRunStatus {
   COMPLETED
   FAILED
 }
+
+// -----------------------------------------------------------------------------
+// University of Kigali — Data Deduplication & Record Matching Models
+// -----------------------------------------------------------------------------
 
 model InstitutionalRecord {
   id                 String                    @id @default(cuid())

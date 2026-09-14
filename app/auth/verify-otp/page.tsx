@@ -103,13 +103,20 @@ export default function VerifyOTP() {
       if (data) {
         toast.success("Email verified successfully!");
         const role = sessionStorage.getItem("registrationRole");
-        if (role === "doctor") {
-          router.push("/auth/doctor-onboarding");
-        } else {
-          sessionStorage.removeItem("verifyEmail");
-          sessionStorage.removeItem("registrationRole");
-          router.push("/auth/login");
+        if (role) {
+          try {
+            await fetch("/api/auth/account-flow", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ operation: "set-initial-role", role }),
+            });
+          } catch (e) {
+            console.error("Failed to set initial role", e);
+          }
         }
+        sessionStorage.removeItem("verifyEmail");
+        sessionStorage.removeItem("registrationRole");
+        router.push("/auth/login");
       }
     } catch (error) {
       console.error("Verification error:", error);

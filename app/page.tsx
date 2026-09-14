@@ -1,326 +1,318 @@
 import Link from "next/link";
 import {
-  Activity,
+  School,
   ArrowRight,
-  Brain,
-  Check,
-  ChevronRight,
-  ClipboardCheck,
-  Clock3,
-  HeartPulse,
-  Menu,
-  MessageSquareText,
+  GitCompare,
+  Layers,
+  CheckCircle2,
   ShieldCheck,
-  Stethoscope,
-  UserRoundCheck,
+  Search,
+  Sparkles,
+  Users,
+  Database,
+  Building2,
+  GraduationCap,
+  FileSpreadsheet,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-const fastSteps = [
-  { letter: "F", title: "Face", description: "Ask the person to smile. Is one side drooping?" },
-  { letter: "A", title: "Arms", description: "Ask them to raise both arms. Does one drift down?" },
-  { letter: "S", title: "Speech", description: "Ask them to repeat a phrase. Is speech slurred?" },
-  { letter: "T", title: "Time", description: "If you see any sign, call emergency services now." },
-];
-
-const workflow = [
+const duplicateVariations = [
   {
-    number: "01",
-    icon: ClipboardCheck,
-    title: "Record symptoms",
-    description: "Complete a guided symptom check and describe what you are experiencing.",
+    title: "Different Name Spelling & Missing Middle Name",
+    exampleA: "Jean-Paul Habimana",
+    exampleB: "Jean Paul Habimana",
+    matchType: "Jaro-Winkler & Token Sort (98% match)",
   },
   {
-    number: "02",
-    icon: Brain,
-    title: "Understand the risk",
-    description: "Receive a clear risk level, confidence score, FAST score, and next-step guidance.",
+    title: "Phone Number & Capitalization Format",
+    exampleA: "0788-123-456",
+    exampleB: "+250 788 123 456",
+    matchType: "Rwanda E.164 Phone Agreement (100% match)",
   },
   {
-    number: "03",
-    icon: UserRoundCheck,
-    title: "Connect with a doctor",
-    description: "Assign an approved doctor who can review the assessment and leave clinical comments.",
+    title: "Registration Number Format Differences",
+    exampleA: "UOK/2023/BIT/042",
+    exampleB: "uok-2023-bit-042",
+    matchType: "Canonical Identifier Normalization (100% match)",
+  },
+  {
+    title: "Date of Birth Format Discrepancies",
+    exampleA: "2001-05-14 (ISO)",
+    exampleB: "14/05/2001 (DD/MM/YYYY)",
+    matchType: "Date Agreement & Calendar Parsing (100% match)",
   },
 ];
 
-const platformPoints = [
-  "Secure patient assessment history",
-  "Approved doctor review workflow",
-  "High-risk alerts and notifications",
-  "Administrative oversight and audit logs",
+const workflows = [
+  {
+    step: "01",
+    icon: FileSpreadsheet,
+    title: "Standardize & Ingest",
+    desc: "Import CSV cohorts or submit student records. Data is cleaned, trimmed, and standardized across Rwandan phones, national IDs, and names.",
+  },
+  {
+    step: "02",
+    icon: GitCompare,
+    title: "Blocking & Field Similarity",
+    desc: "Multi-pass phonetic and identifier blocking avoids quadratic search. Field similarity is scored via Jaro-Winkler, Levenshtein, and Jaccard algorithms.",
+  },
+  {
+    step: "03",
+    icon: Sparkles,
+    title: "ML Classification",
+    desc: "Probabilistic Fellegi-Sunter and ML scoring classify pairs into MATCH, POSSIBLE_MATCH, or NON_MATCH with explainable confidence.",
+  },
+  {
+    step: "04",
+    icon: Layers,
+    title: "Review & Non-Destructive Merge",
+    desc: "Registry Staff review pairs side-by-side. Confirmed duplicates are consolidated into a single master record without deleting original data.",
+  },
 ];
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b bg-background/95">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5" aria-label="StrokeCheck home">
-            <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <HeartPulse size={16} />
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <School size={18} />
             </span>
-            <span className="text-sm font-semibold tracking-tight">StrokeCheck</span>
+            <div>
+              <span className="text-sm font-bold tracking-tight block">University of Kigali</span>
+              <span className="text-[10px] text-muted-foreground block -mt-0.5">Record Deduplication System</span>
+            </div>
           </Link>
 
-          <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
-            <a href="#how-it-works" className="text-sm text-muted-foreground transition-colors hover:text-foreground">How it works</a>
-            <a href="#fast" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Know FAST</a>
-            <a href="#for-care-teams" className="text-sm text-muted-foreground transition-colors hover:text-foreground">For care teams</a>
+          <nav className="hidden items-center gap-6 md:flex text-sm text-muted-foreground">
+            <a href="#how-it-works" className="hover:text-foreground transition-colors">How It Works</a>
+            <a href="#duplicate-handling" className="hover:text-foreground transition-colors">Duplicate Variations</a>
+            <a href="#portals" className="hover:text-foreground transition-colors">Portals & Roles</a>
           </nav>
 
-          <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-              <Link href="/auth/login">Sign in</Link>
+          <div className="flex items-center gap-2.5">
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/auth/login">Sign In</Link>
             </Button>
             <Button asChild size="sm">
-              <Link href="/auth/register">Get started <ArrowRight size={14} /></Link>
-            </Button>
-            <Button variant="ghost" size="icon-sm" className="md:hidden" aria-label="Browse page sections" asChild>
-              <a href="#how-it-works"><Menu size={17} /></a>
+              <Link href="/auth/register">
+                Register <ArrowRight size={14} className="ml-1" />
+              </Link>
             </Button>
           </div>
         </div>
       </header>
 
+      {/* Hero Section */}
       <main>
         <section className="border-b">
-          <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-32">
+          <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
             <div>
-              <Badge variant="outline" className="mb-6 rounded-full px-3 py-1 font-normal">
-                <Activity size={12} /> Early awareness matters
+              <Badge variant="outline" className="mb-4 rounded-full px-3 py-1 font-normal border-primary/40 bg-primary/5">
+                <ShieldCheck size={12} className="mr-1.5 text-primary" /> University Registry Record Linkage
               </Badge>
-              <h1 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-                Recognize stroke risk. Act with clarity.
+              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-5xl leading-tight">
+                Identify duplicate student records with high precision.
               </h1>
-              <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-                StrokeCheck helps patients record warning signs, understand risk,
-                and share assessments with approved doctors for timely review.
+              <p className="mt-5 text-base text-muted-foreground leading-relaxed">
+                The University of Kigali Data Deduplication System resolves discrepancies across campus admissions, spelling variations, inverted names, and differing phone or registration number formats.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild size="lg">
-                  <Link href="/auth/register">Start a symptom check <ArrowRight size={15} /></Link>
+                  <Link href="/auth/login">
+                    Access Portal <ArrowRight size={15} className="ml-1.5" />
+                  </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">
-                  <a href="#fast">Learn the FAST signs</a>
+                  <a href="#how-it-works">Learn the Matching Pipeline</a>
                 </Button>
               </div>
-              <p className="mt-5 flex items-start gap-2 text-xs leading-5 text-muted-foreground">
-                <ShieldCheck size={14} className="mt-0.5 shrink-0" />
-                StrokeCheck supports awareness and clinical review. It does not replace emergency services or a medical diagnosis.
-              </p>
             </div>
 
-            <div className="relative">
-              <div className="rounded-xl border bg-card p-5 shadow-sm sm:p-6">
-                <div className="flex items-center justify-between border-b pb-5">
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Assessment preview</p>
-                    <p className="mt-1 text-sm font-medium">Stroke risk summary</p>
-                  </div>
-                  <Badge variant="destructive">High risk</Badge>
-                </div>
-                <div className="grid gap-6 py-6 sm:grid-cols-[auto_1fr] sm:items-center">
-                  <div className="flex size-28 flex-col items-center justify-center rounded-full border-[6px] border-destructive/20">
-                    <span className="text-2xl font-semibold">86%</span>
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Confidence</span>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="mb-2 flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">FAST score</span>
-                        <span className="font-medium">3 of 4</span>
-                      </div>
-                      <div className="grid grid-cols-4 gap-1.5">
-                        {["F", "A", "S", "T"].map((letter, index) => (
-                          <span
-                            key={letter}
-                            className={index < 3 ? "flex h-8 items-center justify-center rounded-md border border-destructive/30 bg-destructive/10 text-xs font-semibold text-destructive" : "flex h-8 items-center justify-center rounded-md bg-muted text-xs font-semibold text-muted-foreground"}
-                          >
-                            {letter}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="mb-2 text-xs text-muted-foreground">Detected signs</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {["Facial drooping", "Arm weakness", "Speech difficulty"].map((sign) => (
-                          <span key={sign} className="rounded-md bg-muted px-2 py-1 text-[11px] text-muted-foreground">{sign}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-                  <p className="text-xs font-medium text-destructive">Seek emergency care immediately</p>
-                  <p className="mt-1 text-xs leading-5 text-muted-foreground">Call emergency services. Do not wait for symptoms to improve.</p>
-                </div>
-              </div>
-              <div className="absolute -bottom-5 -left-5 hidden w-52 rounded-lg border bg-background p-4 shadow-sm sm:block">
-                <div className="flex items-center gap-2">
-                  <span className="flex size-7 items-center justify-center rounded-full bg-muted"><Stethoscope size={13} /></span>
-                  <div>
-                    <p className="text-xs font-medium">Doctor review</p>
-                    <p className="text-[10px] text-muted-foreground">Assigned and notified</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-b bg-muted/30">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px border-x bg-border sm:grid-cols-4">
-            {[
-              ["Patients", "Guided symptom assessments"],
-              ["Doctors", "Assigned clinical reviews"],
-              ["Administrators", "Verified care oversight"],
-              ["Every assessment", "Clear history and alerts"],
-            ].map(([title, description]) => (
-              <div key={title} className="bg-background p-5 sm:p-6">
-                <p className="text-sm font-medium">{title}</p>
-                <p className="mt-1 text-xs leading-5 text-muted-foreground">{description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="how-it-works" className="scroll-mt-20 border-b">
-          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-            <div className="max-w-2xl">
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">How it works</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">From symptoms to a reviewed assessment</h2>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">A straightforward workflow designed to help people document concerns and connect with an approved medical professional.</p>
-            </div>
-            <div className="mt-12 grid gap-4 lg:grid-cols-3">
-              {workflow.map(({ number, icon: Icon, title, description }) => (
-                <div key={number} className="rounded-lg border p-6">
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-9 items-center justify-center rounded-md bg-muted"><Icon size={16} /></span>
-                    <span className="font-mono text-xs text-muted-foreground">{number}</span>
-                  </div>
-                  <h3 className="mt-8 text-base font-semibold">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="fast" className="scroll-mt-20 border-b">
-          <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-[0.75fr_1.25fr]">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Know the signs</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Think FAST</h2>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                Stroke symptoms can begin suddenly. Knowing these four steps can help you recognize warning signs and act quickly.
-              </p>
-              <div className="mt-7 rounded-lg border p-4">
-                <div className="flex items-start gap-3">
-                  <Clock3 size={17} className="mt-0.5 shrink-0 text-destructive" />
-                  <div>
-                    <p className="text-sm font-medium">Do not wait</p>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">Call emergency services immediately when stroke signs appear. Every minute matters.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {fastSteps.map((step) => (
-                <div key={step.letter} className="flex gap-4 rounded-lg border p-5">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">{step.letter}</span>
-                  <div>
-                    <p className="text-sm font-semibold">{step.title}</p>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">{step.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="for-care-teams" className="scroll-mt-20 border-b bg-muted/30">
-          <div className="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2 lg:items-center">
-            <div className="rounded-xl border bg-background p-5 sm:p-7">
-              <div className="flex items-center gap-3 border-b pb-5">
-                <span className="flex size-9 items-center justify-center rounded-md bg-muted"><MessageSquareText size={16} /></span>
+            {/* Interactive Preview Card */}
+            <div className="rounded-xl border bg-card p-6 shadow-sm">
+              <div className="flex items-center justify-between border-b pb-4 mb-4">
                 <div>
-                  <p className="text-sm font-medium">Connected care workflow</p>
-                  <p className="text-xs text-muted-foreground">Built around clear responsibility</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground">Matching Engine Preview</p>
+                  <p className="text-sm font-semibold mt-0.5">Candidate Pair Comparison</p>
+                </div>
+                <Badge variant="default" className="bg-emerald-600">MATCH (96.4%)</Badge>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-muted/40">
+                  <div>
+                    <span className="text-[10px] uppercase text-muted-foreground block">Record A (Admissions)</span>
+                    <span className="font-semibold block mt-0.5">Jean-Paul Habimana</span>
+                    <span className="text-[10px] font-mono text-muted-foreground">UOK/2023/BIT/042</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase text-muted-foreground block">Record B (Musanze Campus)</span>
+                    <span className="font-semibold block mt-0.5">Jean Paul Habimana</span>
+                    <span className="text-[10px] font-mono text-muted-foreground">uok-2023-bit-042</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-muted-foreground">National ID Agreement</span>
+                    <span className="font-semibold text-emerald-600">100% Match</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-muted-foreground">Jaro-Winkler Name Similarity</span>
+                    <span className="font-semibold text-emerald-600">97.8% Match</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-muted-foreground">Phone Number Format Agreement</span>
+                    <span className="font-semibold text-emerald-600">100% Match</span>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-lg border border-primary/20 bg-primary/5 mt-2">
+                  <p className="text-[11px] font-semibold text-primary">Human-in-the-Loop Confirmation</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    Records are never merged automatically. Registry Staff review the side-by-side evidence before consolidating into a master record.
+                  </p>
                 </div>
               </div>
-              <div className="divide-y">
-                {[
-                  ["Patient", "Completes an assessment and selects an approved doctor."],
-                  ["Doctor", "Reviews assigned results and sends a clinical comment."],
-                  ["Administrator", "Approves doctors, monitors feedback, and manages access."],
-                ].map(([role, detail]) => (
-                  <div key={role} className="flex gap-4 py-5">
-                    <Check size={15} className="mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">{role}</p>
-                      <p className="mt-1 text-xs leading-5 text-muted-foreground">{detail}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">One coordinated platform</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Useful for patients. Accountable for care teams.</h2>
-              <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
-                StrokeCheck brings assessment history, doctor assignment, clinical comments, notifications, and administrative controls into one focused experience.
-              </p>
-              <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                {platformPoints.map((point) => (
-                  <div key={point} className="flex items-center gap-2.5 text-sm">
-                    <span className="flex size-5 items-center justify-center rounded-full border"><Check size={11} /></span>
-                    {point}
-                  </div>
-                ))}
-              </div>
-              <Button asChild variant="outline" className="mt-8">
-                <Link href="/auth/register">Create an account <ChevronRight size={14} /></Link>
-              </Button>
             </div>
           </div>
         </section>
 
-        <section>
-          <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-            <div className="rounded-xl border bg-primary px-6 py-12 text-primary-foreground sm:px-10 sm:py-14">
-              <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-                <div className="max-w-2xl">
-                  <p className="text-xs font-medium uppercase tracking-wider text-primary-foreground/60">Start today</p>
-                  <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Be better prepared when warning signs appear.</h2>
-                  <p className="mt-4 text-sm leading-6 text-primary-foreground/70">Create your secure account, document symptoms, and connect assessments with approved doctors.</p>
+        {/* Variations Handled */}
+        <section id="duplicate-handling" className="border-b py-16 bg-muted/20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-wider text-primary">Intelligent Data Cleaning</p>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mt-2">
+                Discrepancies Handled Automatically
+              </h2>
+              <p className="text-sm text-muted-foreground mt-2">
+                The system normalizes records before comparison, handling typographical errors, format variances, and missing information.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {duplicateVariations.map((item) => (
+                <div key={item.title} className="rounded-xl border bg-card p-5 space-y-3">
+                  <h3 className="font-semibold text-xs leading-snug">{item.title}</h3>
+                  <div className="rounded-md border p-2.5 bg-muted/30 text-[11px] font-mono space-y-1">
+                    <p className="text-foreground font-medium">A: {item.exampleA}</p>
+                    <p className="text-muted-foreground">B: {item.exampleB}</p>
+                  </div>
+                  <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
+                    {item.matchType}
+                  </Badge>
                 </div>
-                <div className="flex shrink-0 flex-wrap gap-3">
-                  <Button asChild variant="secondary" size="lg">
-                    <Link href="/auth/register">Create account <ArrowRight size={15} /></Link>
-                  </Button>
-                  <Button asChild size="lg" className="border border-primary-foreground/25 bg-transparent text-primary-foreground hover:bg-primary-foreground/10">
-                    <Link href="/auth/login">Sign in</Link>
-                  </Button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Pipeline Workflows */}
+        <section id="how-it-works" className="border-b py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-wider text-primary">Methodology</p>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mt-2">
+                4-Stage Deduplication & Consolidation Pipeline
+              </h2>
+            </div>
+
+            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {workflows.map(({ step, icon: Icon, title, desc }) => (
+                <div key={step} className="rounded-xl border p-6 bg-card">
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Icon size={20} />
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground font-semibold">{step}</span>
+                  </div>
+                  <h3 className="mt-5 text-sm font-semibold">{title}</h3>
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{desc}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Portals & Roles */}
+        <section id="portals" className="border-b py-16 bg-muted/20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="max-w-2xl mb-10">
+              <p className="text-xs font-bold uppercase tracking-wider text-primary">System Access</p>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mt-2">
+                Role-Based Portals & Responsibilities
+              </h2>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {/* Student */}
+              <div className="rounded-xl border bg-card p-6 flex flex-col justify-between">
+                <div>
+                  <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-4">
+                    <GraduationCap size={20} />
+                  </div>
+                  <h3 className="font-bold text-base">Student Portal</h3>
+                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                    Submit personal and academic records, search allowed institutional records, and run pre-registration duplicate checks. Protected by privacy rules.
+                  </p>
+                </div>
+                <Button asChild variant="outline" size="sm" className="mt-6 w-full">
+                  <Link href="/auth/login">Student Login</Link>
+                </Button>
+              </div>
+
+              {/* Registry Staff */}
+              <div className="rounded-xl border bg-card p-6 flex flex-col justify-between">
+                <div>
+                  <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-4">
+                    <Building2 size={20} />
+                  </div>
+                  <h3 className="font-bold text-base">Registry Staff Portal</h3>
+                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                    Import CSV datasets, validate cohort data, run multi-attribute deduplication, review matching candidates side-by-side, and execute non-destructive master merges.
+                  </p>
+                </div>
+                <Button asChild variant="outline" size="sm" className="mt-6 w-full">
+                  <Link href="/auth/login">Staff Login</Link>
+                </Button>
+              </div>
+
+              {/* Administrator */}
+              <div className="rounded-xl border bg-card p-6 flex flex-col justify-between">
+                <div>
+                  <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-4">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <h3 className="font-bold text-base">Administrator Console</h3>
+                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                    Access system reports, monitor audit activities, manage system users and roles, calibrate machine learning model thresholds, and oversee deduplication operations.
+                  </p>
+                </div>
+                <Button asChild variant="outline" size="sm" className="mt-6 w-full">
+                  <Link href="/auth/login">Admin Login</Link>
+                </Button>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t">
-        <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      {/* Footer */}
+      <footer className="border-t py-8">
+        <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-4 px-4 sm:px-6 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <HeartPulse size={15} />
-            <span className="text-sm font-medium">StrokeCheck</span>
+            <School size={15} />
+            <span className="font-semibold text-foreground">University of Kigali</span>
+            <span>· Registry Records & Deduplication System</span>
           </div>
-          <p className="max-w-xl text-xs leading-5 text-muted-foreground">For awareness and decision support only. If you suspect a stroke, contact emergency services immediately.</p>
-          <div className="flex gap-4 text-xs text-muted-foreground">
-            <Link href="/auth/login" className="hover:text-foreground">Sign in</Link>
-            <Link href="/auth/register" className="hover:text-foreground">Register</Link>
+          <div className="flex gap-4">
+            <Link href="/auth/login" className="hover:text-foreground transition-colors">Sign In</Link>
+            <Link href="/auth/register" className="hover:text-foreground transition-colors">Register Account</Link>
           </div>
         </div>
       </footer>

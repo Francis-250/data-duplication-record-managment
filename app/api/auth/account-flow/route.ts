@@ -1,23 +1,8 @@
 import { getServerSession } from "@/hooks/get-server-session";
-import {
-  completeDoctorRegistration,
-  createDoctorRegistrationIntent,
-  getPostLoginDestination,
-  startDoctorRegistration,
-} from "@/lib/auth-registration";
+import { getPostLoginDestination, setUserInitialRole } from "@/lib/auth-registration";
 
 type AccountFlowRequest =
-  | { operation: "create-doctor-intent"; email: string }
-  | { operation: "start-doctor-registration"; email: string; token: string }
-  | {
-      operation: "complete-doctor-registration";
-      token: string;
-      email: string;
-      specialization: string;
-      hospitalName: string;
-      licenseNumber: string;
-      phoneNumber: string;
-    }
+  | { operation: "set-initial-role"; role: "STUDENT" | "REGISTRY_STAFF" }
   | { operation: "post-login-destination" };
 
 export async function POST(request: Request) {
@@ -25,16 +10,14 @@ export async function POST(request: Request) {
     const input = (await request.json()) as AccountFlowRequest;
 
     switch (input.operation) {
-      case "create-doctor-intent":
-        return Response.json({
-          token: createDoctorRegistrationIntent(input.email),
-        });
-      case "start-doctor-registration":
-        await startDoctorRegistration(input.email, input.token);
+      case "set-initial-role": {
+        const session = await getServerSession();
+        if (!session?.user) {
+          return Response.json({ error: "Authentication required." }, { status: 401 });
+        }
+        await setUserInitialRole(session.user.id, input.role);
         return Response.json({ ok: true });
-      case "complete-doctor-registration":
-        await completeDoctorRegistration(input);
-        return Response.json({ ok: true });
+      }
       case "post-login-destination": {
         const session = await getServerSession();
         if (!session?.user) {

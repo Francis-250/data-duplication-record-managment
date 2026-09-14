@@ -3,17 +3,15 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Activity,
-  Brain,
-  ClipboardList,
-  FileClock,
-  MessageSquare,
   LayoutDashboard,
+  Users,
+  Settings,
+  FileClock,
+  Sparkles,
   LogOut,
   Menu,
-  Settings,
-  Stethoscope,
-  Users,
+  School,
+  Shield,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -26,20 +24,18 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const links = [
-  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Users", href: "/admin/users", icon: Users },
-  { label: "Doctors", href: "/admin/doctors", icon: Stethoscope },
-  { label: "Assessments", href: "/admin/assessments", icon: ClipboardList },
-  { label: "Doctor feedback", href: "/admin/feedback", icon: MessageSquare },
-  { label: "Audit logs", href: "/admin/audit", icon: FileClock },
-  { label: "AI operations", href: "/admin/ai", icon: Brain },
-  { label: "Profile", href: "/admin/settings", icon: Settings },
+const adminLinks = [
+  { label: "Overview & Reports", href: "/admin", icon: LayoutDashboard },
+  { label: "User Management", href: "/admin/users", icon: Users },
+  { label: "Deduplication Settings", href: "/admin/settings", icon: Settings },
+  { label: "Activity Monitoring", href: "/admin/audit", icon: FileClock },
+  { label: "Model Evaluation", href: "/admin/model-evaluation", icon: Sparkles },
 ];
 
-function Content({ name, mobile = false }: { name: string; mobile?: boolean }) {
+function AdminNavContent({ name, mobile = false }: { name: string; mobile?: boolean }) {
   const path = usePathname();
   const router = useRouter();
+
   const signOut = async () => {
     await authClient.signOut();
     router.push("/auth/login");
@@ -47,44 +43,61 @@ function Content({ name, mobile = false }: { name: string; mobile?: boolean }) {
   };
 
   return (
-    <div className="flex h-full flex-col bg-background">
-      <div className="h-20 border-b px-4 flex flex-col justify-center">
-        <Link href="/admin" className="text-sm font-semibold tracking-tight">
-          StrokeCheck
-        </Link>
-        <p className="mt-0.5 text-xs text-muted-foreground">Admin Console</p>
+    <div className="flex h-full flex-col bg-card border-r">
+      <div className="h-16 border-b px-4 flex items-center gap-2.5">
+        <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <School size={16} />
+        </div>
+        <div>
+          <p className="text-xs font-bold tracking-tight uppercase leading-none">University of Kigali</p>
+          <p className="text-[10px] text-muted-foreground mt-1">Admin Console</p>
+        </div>
       </div>
+
       <nav className="flex-1 space-y-1 p-3">
-        {links.map(({ label, href, icon: Icon }) => {
+        {adminLinks.map(({ label, href, icon: Icon }) => {
           const active = href === "/admin" ? path === href : path.startsWith(href);
-          const link = (
+          const linkNode = (
             <Link
               href={href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-colors",
                 active
-                  ? "bg-accent text-accent-foreground font-medium"
-                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
               <Icon size={16} />
               {label}
             </Link>
           );
-          return mobile ? <SheetClose asChild key={href}>{link}</SheetClose> : <div key={href}>{link}</div>;
+
+          return mobile ? (
+            <SheetClose asChild key={href}>
+              {linkNode}
+            </SheetClose>
+          ) : (
+            <div key={href}>{linkNode}</div>
+          );
         })}
       </nav>
+
       <div className="border-t p-3">
         <div className="mb-3 flex items-center gap-2 px-2">
-          <div className="size-7 rounded-full bg-muted flex items-center justify-center">
-            <Activity size={13} />
+          <div className="size-7 rounded-full bg-destructive/10 text-destructive flex items-center justify-center">
+            <Shield size={13} />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{name}</p>
-            <p className="text-xs text-muted-foreground">Administrator</p>
+            <p className="truncate text-xs font-semibold">{name}</p>
+            <p className="text-[10px] text-muted-foreground">Administrator</p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={signOut}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          onClick={signOut}
+        >
           <LogOut size={14} className="mr-2" /> Sign Out
         </Button>
       </div>
@@ -95,19 +108,24 @@ function Content({ name, mobile = false }: { name: string; mobile?: boolean }) {
 export function AdminSidebar({ name }: { name: string }) {
   return (
     <>
-      <aside className="hidden lg:block fixed inset-y-0 left-0 z-40 w-56 border-r bg-background">
-        <Content name={name} />
+      <aside className="hidden lg:block fixed inset-y-0 left-0 z-40 w-60">
+        <AdminNavContent name={name} />
       </aside>
+
       <header className="lg:hidden sticky top-0 z-40 h-14 border-b bg-background flex items-center px-4">
         <Sheet>
-          <SheetTrigger asChild><Button variant="ghost" size="icon"><Menu size={18} /><span className="sr-only">Open navigation</span></Button></SheetTrigger>
-          <SheetContent side="left" className="w-56 p-0 gap-0" showCloseButton={false}>
-            <SheetTitle className="sr-only">Admin navigation</SheetTitle>
-            <Content name={name} mobile />
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label="Open navigation">
+              <Menu size={18} />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64 p-0 gap-0" showCloseButton={false}>
+            <SheetTitle className="sr-only">Admin Navigation</SheetTitle>
+            <AdminNavContent name={name} mobile />
           </SheetContent>
         </Sheet>
         <div className="ml-2">
-          <p className="text-sm font-semibold tracking-tight">StrokeCheck</p>
+          <p className="text-xs font-bold tracking-tight">University of Kigali</p>
           <p className="text-[10px] text-muted-foreground">Admin Console</p>
         </div>
       </header>
